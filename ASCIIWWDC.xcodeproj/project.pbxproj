@@ -14,6 +14,17 @@
 		BB6DA72120AC8CA900747820 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB6DA72020AC8CA900747820 /* Assets.xcassets */; };
 		BB6DA72420AC8CA900747820 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB6DA72220AC8CA900747820 /* LaunchScreen.storyboard */; };
 		BB6DA72720AC8CA900747820 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6DA72620AC8CA900747820 /* main.m */; };
+		BB6DA73320AC91ED00747820 /* DataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6DA73220AC91ED00747820 /* DataManager.m */; };
+		BBAC693920ADA877001F5D59 /* Conference.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC693820ADA877001F5D59 /* Conference.m */; };
+		BBAC693C20ADA97E001F5D59 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC693B20ADA97E001F5D59 /* Location.m */; };
+		BBAC693F20ADACA7001F5D59 /* Track.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC693E20ADACA7001F5D59 /* Track.m */; };
+		BBAC694220ADACEC001F5D59 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC694120ADACEC001F5D59 /* Session.m */; };
+		BBAC694520ADB014001F5D59 /* ConferencesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC694420ADB014001F5D59 /* ConferencesTableViewController.m */; };
+		BBAC694820ADB3A6001F5D59 /* ParserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC694720ADB3A6001F5D59 /* ParserManager.m */; };
+		BBF85D8B20AFB31F00DAFE1E /* ConferenceTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = BBF85D8A20AFB31F00DAFE1E /* ConferenceTableViewCell.m */; };
+		BBF85D8E20AFD4F300DAFE1E /* TracksTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBF85D8D20AFD4F300DAFE1E /* TracksTableViewController.m */; };
+		BBF85D9120AFD79C00DAFE1E /* TrackHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = BBF85D9020AFD79C00DAFE1E /* TrackHeaderView.m */; };
+		BBF85D9420B0019D00DAFE1E /* MyWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBF85D9320B0019D00DAFE1E /* MyWebViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +41,29 @@
 		BB6DA72320AC8CA900747820 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BB6DA72520AC8CA900747820 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BB6DA72620AC8CA900747820 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BB6DA73120AC91ED00747820 /* DataManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
+		BB6DA73220AC91ED00747820 /* DataManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DataManager.m; sourceTree = "<group>"; };
+		BBAC693720ADA877001F5D59 /* Conference.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Conference.h; sourceTree = "<group>"; };
+		BBAC693820ADA877001F5D59 /* Conference.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Conference.m; sourceTree = "<group>"; };
+		BBAC693A20ADA97E001F5D59 /* Location.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
+		BBAC693B20ADA97E001F5D59 /* Location.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Location.m; sourceTree = "<group>"; };
+		BBAC693D20ADACA7001F5D59 /* Track.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Track.h; sourceTree = "<group>"; };
+		BBAC693E20ADACA7001F5D59 /* Track.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Track.m; sourceTree = "<group>"; };
+		BBAC694020ADACEC001F5D59 /* Session.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Session.h; sourceTree = "<group>"; };
+		BBAC694120ADACEC001F5D59 /* Session.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Session.m; sourceTree = "<group>"; };
+		BBAC694320ADB014001F5D59 /* ConferencesTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConferencesTableViewController.h; sourceTree = "<group>"; };
+		BBAC694420ADB014001F5D59 /* ConferencesTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConferencesTableViewController.m; sourceTree = "<group>"; };
+		BBAC694620ADB3A6001F5D59 /* ParserManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParserManager.h; sourceTree = "<group>"; };
+		BBAC694720ADB3A6001F5D59 /* ParserManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ParserManager.m; sourceTree = "<group>"; };
+		BBF85D8920AFB31F00DAFE1E /* ConferenceTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConferenceTableViewCell.h; sourceTree = "<group>"; };
+		BBF85D8A20AFB31F00DAFE1E /* ConferenceTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConferenceTableViewCell.m; sourceTree = "<group>"; };
+		BBF85D8C20AFD4F300DAFE1E /* TracksTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TracksTableViewController.h; sourceTree = "<group>"; };
+		BBF85D8D20AFD4F300DAFE1E /* TracksTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TracksTableViewController.m; sourceTree = "<group>"; };
+		BBF85D8F20AFD79C00DAFE1E /* TrackHeaderView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrackHeaderView.h; sourceTree = "<group>"; };
+		BBF85D9020AFD79C00DAFE1E /* TrackHeaderView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TrackHeaderView.m; sourceTree = "<group>"; };
+		BBF85D9220B0019D00DAFE1E /* MyWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyWebViewController.h; sourceTree = "<group>"; };
+		BBF85D9320B0019D00DAFE1E /* MyWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyWebViewController.m; sourceTree = "<group>"; };
+		BBF85D9620B005A500DAFE1E /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +116,10 @@
 		BB6DA71620AC8CA800747820 /* ASCIIWWDC */ = {
 			isa = PBXGroup;
 			children = (
+				BB6DA73020AC91CD00747820 /* Util */,
+				BB6DA72F20AC91B800747820 /* Controller */,
+				BB6DA72E20AC91B200747820 /* View */,
+				BB6DA72D20AC91A800747820 /* Model */,
 				BB6DA71720AC8CA800747820 /* AppDelegate.h */,
 				BB6DA71820AC8CA800747820 /* AppDelegate.m */,
 				BB6DA71A20AC8CA800747820 /* ViewController.h */,
@@ -93,6 +131,57 @@
 				BB6DA72620AC8CA900747820 /* main.m */,
 			);
 			path = ASCIIWWDC;
+			sourceTree = "<group>";
+		};
+		BB6DA72D20AC91A800747820 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				BBAC693720ADA877001F5D59 /* Conference.h */,
+				BBAC693820ADA877001F5D59 /* Conference.m */,
+				BBAC693A20ADA97E001F5D59 /* Location.h */,
+				BBAC693B20ADA97E001F5D59 /* Location.m */,
+				BBAC693D20ADACA7001F5D59 /* Track.h */,
+				BBAC693E20ADACA7001F5D59 /* Track.m */,
+				BBAC694020ADACEC001F5D59 /* Session.h */,
+				BBAC694120ADACEC001F5D59 /* Session.m */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		BB6DA72E20AC91B200747820 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				BBF85D8920AFB31F00DAFE1E /* ConferenceTableViewCell.h */,
+				BBF85D8A20AFB31F00DAFE1E /* ConferenceTableViewCell.m */,
+				BBF85D8F20AFD79C00DAFE1E /* TrackHeaderView.h */,
+				BBF85D9020AFD79C00DAFE1E /* TrackHeaderView.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		BB6DA72F20AC91B800747820 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				BBAC694320ADB014001F5D59 /* ConferencesTableViewController.h */,
+				BBAC694420ADB014001F5D59 /* ConferencesTableViewController.m */,
+				BBF85D8C20AFD4F300DAFE1E /* TracksTableViewController.h */,
+				BBF85D8D20AFD4F300DAFE1E /* TracksTableViewController.m */,
+				BBF85D9220B0019D00DAFE1E /* MyWebViewController.h */,
+				BBF85D9320B0019D00DAFE1E /* MyWebViewController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		BB6DA73020AC91CD00747820 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				BB6DA73120AC91ED00747820 /* DataManager.h */,
+				BB6DA73220AC91ED00747820 /* DataManager.m */,
+				BBAC694620ADB3A6001F5D59 /* ParserManager.h */,
+				BBAC694720ADB3A6001F5D59 /* ParserManager.m */,
+				BBF85D9620B005A500DAFE1E /* Constants.h */,
+			);
+			path = Util;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -170,9 +259,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-ASCIIWWDC/Pods-ASCIIWWDC-resources.sh",
+				"${PODS_ROOT}/SVProgressHUD/SVProgressHUD/SVProgressHUD.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SVProgressHUD.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -219,9 +311,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BBAC694820ADB3A6001F5D59 /* ParserManager.m in Sources */,
+				BBF85D9420B0019D00DAFE1E /* MyWebViewController.m in Sources */,
+				BBF85D9120AFD79C00DAFE1E /* TrackHeaderView.m in Sources */,
 				BB6DA71C20AC8CA800747820 /* ViewController.m in Sources */,
+				BBAC693C20ADA97E001F5D59 /* Location.m in Sources */,
+				BBAC693920ADA877001F5D59 /* Conference.m in Sources */,
+				BBAC694520ADB014001F5D59 /* ConferencesTableViewController.m in Sources */,
+				BBF85D8E20AFD4F300DAFE1E /* TracksTableViewController.m in Sources */,
+				BB6DA73320AC91ED00747820 /* DataManager.m in Sources */,
 				BB6DA72720AC8CA900747820 /* main.m in Sources */,
 				BB6DA71920AC8CA800747820 /* AppDelegate.m in Sources */,
+				BBAC693F20ADACA7001F5D59 /* Track.m in Sources */,
+				BBF85D8B20AFB31F00DAFE1E /* ConferenceTableViewCell.m in Sources */,
+				BBAC694220ADACEC001F5D59 /* Session.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,8 +467,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 97RJ92JQE4;
+				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = ASCIIWWDC/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tamarous.ASCIIWWDC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -379,8 +486,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 97RJ92JQE4;
+				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = ASCIIWWDC/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tamarous.ASCIIWWDC;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
