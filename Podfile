@@ -7,4 +7,5 @@ target 'ASCIIWWDC' do
     pod 'SDWebImage'
     pod 'HTMLKit', '~> 2.1'
     pod 'SVProgressHUD'
+    pod 'DZNEmptyDataSet'
 end

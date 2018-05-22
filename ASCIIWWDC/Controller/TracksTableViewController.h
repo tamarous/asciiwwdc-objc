@@ -10,4 +10,5 @@
 #import "Track.h"
 @interface TracksTableViewController : UITableViewController
 @property (nonatomic, copy) NSArray *tracks;
+@property (nonatomic, copy) NSString *title;
 @end

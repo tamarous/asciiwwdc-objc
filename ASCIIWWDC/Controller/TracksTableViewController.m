@@ -21,15 +21,15 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.navigationItem.title = self.title;
+    self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAutomatic;
+    
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kSessionTableViewCell];
     
     [self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
     
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -95,6 +95,7 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
     
     MyWebViewController *webViewController = [[MyWebViewController alloc] init];
     webViewController.requestURL = requestURL;
+    webViewController.session = session;
     [self.navigationController pushViewController:webViewController animated:YES];
 }
 

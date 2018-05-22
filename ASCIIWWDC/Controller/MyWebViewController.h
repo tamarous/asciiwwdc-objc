@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Session.h"
 @interface MyWebViewController : UIViewController
 @property (nonatomic, strong) NSURL *requestURL;
+@property (nonatomic, strong) Session *session;
 @end

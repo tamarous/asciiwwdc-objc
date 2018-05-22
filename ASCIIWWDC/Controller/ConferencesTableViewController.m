@@ -30,6 +30,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
     [super viewDidLoad];
     
     self.navigationItem.title = @"WWDC";
+    self.navigationController.navigationBar.prefersLargeTitles = YES;
     self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
     
     UIEdgeInsets safeArea = self.view.safeAreaInsets;
@@ -54,6 +55,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self loadContents];
+        
     });
 }
 
@@ -90,6 +92,10 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
         }
     }];
     [dataTask resume];
+}
+
+- (void) saveContents {
+    
 }
 
 #pragma mark - Table view data source
@@ -136,6 +142,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
     TracksTableViewController *tracksController = [[TracksTableViewController alloc] init];
     Conference *conference = [self.conferences objectAtIndex:indexPath.row];
     tracksController.tracks = conference.tracks;
+    tracksController.title = conference.name;
     [self.navigationController pushViewController:tracksController animated:YES];
 }
 

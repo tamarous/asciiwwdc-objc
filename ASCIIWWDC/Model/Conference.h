@@ -17,5 +17,10 @@
 @property (nonatomic, copy) NSString *time;
 @property (nonatomic, strong) Location *location;
 @property (nonatomic, strong) NSArray<Track *> *tracks;
-
+- (BOOL) save;
+- (BOOL) update;
++ (NSString *) tableName;
++ (NSString *) stringForCreateTable;
++ (NSString *) stringForInsertConference:(Conference *) conference;
++ (NSString *) stringForUpdateConference:(Conference *) conference;
 @end
