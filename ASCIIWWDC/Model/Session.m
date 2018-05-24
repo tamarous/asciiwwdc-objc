@@ -7,31 +7,29 @@
 //
 
 #import "Session.h"
-
-
 static NSString * SESSION_TABLE_NAME = @"SESSIONS";
 @implementation Session
-- (BOOL) save {
-    if (! [[DBManager sharedManager] tableExists:SESSION_TABLE_NAME]) {
-        [[DBManager sharedManager] createTable:SESSION_TABLE_NAME statementString:[[self class] stringForCreateTable]];
-    }
-    return [[DBManager sharedManager] executeInsertString:[[self class] stringForInsertSession:self] inTable:SESSION_TABLE_NAME];
-}
-- (BOOL) update {
-    if (! [[DBManager sharedManager] tableExists:SESSION_TABLE_NAME]) {
-        [[DBManager sharedManager] createTable:SESSION_TABLE_NAME statementString:[[self class] stringForCreateTable]];
-    }
-    return [[DBManager sharedManager] executeUpdateString:[[self class] stringForUpdateSession:self] inTable:SESSION_TABLE_NAME];
-}
+//- (BOOL) save {
+//    if (! [[DBManager sharedManager] tableExists:SESSION_TABLE_NAME]) {
+//        [[DBManager sharedManager] createTable:SESSION_TABLE_NAME statementString:[[self class] stringForCreateTable]];
+//    }
+//    return [[DBManager sharedManager] executeInsertString:[[self class] stringForInsertSession:self] inTable:SESSION_TABLE_NAME];
+//}
+//- (BOOL) update {
+//    if (! [[DBManager sharedManager] tableExists:SESSION_TABLE_NAME]) {
+//        [[DBManager sharedManager] createTable:SESSION_TABLE_NAME statementString:[[self class] stringForCreateTable]];
+//    }
+//    return [[DBManager sharedManager] executeUpdateString:[[self class] stringForUpdateSession:self] inTable:SESSION_TABLE_NAME];
+//}
+//
+//- (BOOL) insertOrReplace {
+//    if (! [[DBManager sharedManager] tableExists:SESSION_TABLE_NAME]) {
+//        [[DBManager sharedManager] createTable:SESSION_TABLE_NAME statementString:[[self class] stringForCreateTable]];
+//    }
+//    return [[DBManager sharedManager] executeUpdateString:[[self class] stringForInsertOrReplace:self] inTable:SESSION_TABLE_NAME];
+//}
 
-- (BOOL) insertOrReplace {
-    if (! [[DBManager sharedManager] tableExists:SESSION_TABLE_NAME]) {
-        [[DBManager sharedManager] createTable:SESSION_TABLE_NAME statementString:[[self class] stringForCreateTable]];
-    }
-    return [[DBManager sharedManager] executeUpdateString:[[self class] stringForInsertOrReplace:self] inTable:SESSION_TABLE_NAME];
-}
-
-+ (NSString *) tableName {
++ (NSString *)tableName {
     return @"SESSIONS";
 }
 

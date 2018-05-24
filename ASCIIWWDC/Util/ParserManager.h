@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <HTMLKit.h>
 #import "Conference.h"
-
+#import "Session.h"
 
 @interface ParserManager : NSObject
 + (instancetype) sharedManager;

@@ -61,7 +61,7 @@
     self.session.isFavored = !self.session.isFavored;
     [SVProgressHUD showWithStatus:@"Updating..."];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self.session insertOrReplace];
+        [[DBManager sharedManager] updateSession:self.session];
         dispatch_async(dispatch_get_main_queue(), ^{
             [SVProgressHUD showSuccessWithStatus:@"Updated"];
             [SVProgressHUD dismissWithDelay:1];
@@ -72,7 +72,7 @@
 - (void) save {
     [SVProgressHUD showWithStatus:@"Saving..."];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self.session save];
+        [[DBManager sharedManager] saveSession:self.session];
         dispatch_async(dispatch_get_main_queue(), ^{
             [SVProgressHUD showSuccessWithStatus:@"Saved"];
             [SVProgressHUD dismissWithDelay:1];

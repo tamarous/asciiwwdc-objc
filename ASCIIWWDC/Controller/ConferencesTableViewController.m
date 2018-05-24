@@ -12,6 +12,7 @@
 #import <SVProgressHUD.h>
 #import "ConferenceTableViewCell.h"
 #import "TracksTableViewController.h"
+#import "DBManager.h"
 
 static NSString * const kConferenceTableViewCell = @"ConferenceTableViewCell";
 static NSString * const kLoadingTableViewCell = @"LoadingTableViewCell";
@@ -21,6 +22,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
 @property (nonatomic, copy) NSArray<Conference *> *conferences;
 @property (nonatomic, assign) BOOL isLoading;
 @property (nonatomic, copy) configureCellBlock cellBlock;
+@property (nonatomic, assign) BOOL dataSaved;
 - (void) loadContents;
 @end
 
@@ -55,7 +57,6 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self loadContents];
-        
     });
 }
 
@@ -65,10 +66,28 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
 }
 
 
+#pragma mark - ViewController Life Cycle
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if (! self.dataSaved) {
+        [self saveContents];
+    }
+}
+
+
 #pragma mark - Load Contents From ASCIIWWDC HomePage
 
 - (void) loadContents {
     self.isLoading = true;
+    // 从磁盘中加载的功能暂时先不做，因为还没有办法对 Track 进行序列化
+//    if ([[DBManager sharedManager] tableExists:[Conference tableName]]) {
+//        self.conferences = [[DBManager sharedManager] loadConferencesArrayFromDatabase];
+//        if (self.conferences != nil) {
+//            NSLog(@"Load conferences from array");
+//            return;
+//        }
+//    }
+    
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
     AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
@@ -95,7 +114,11 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
 }
 
 - (void) saveContents {
-    
+    NSLog(@"Conferences saved");
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [[DBManager sharedManager] saveConferencesArray:self.conferences];
+        self.dataSaved = YES;
+    });
 }
 
 #pragma mark - Table view data source
@@ -136,7 +159,6 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
     }
 }
 
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     TracksTableViewController *tracksController = [[TracksTableViewController alloc] init];
@@ -145,7 +167,6 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
     tracksController.title = conference.name;
     [self.navigationController pushViewController:tracksController animated:YES];
 }
-
 
 /*
 // Override to support conditional editing of the table view.

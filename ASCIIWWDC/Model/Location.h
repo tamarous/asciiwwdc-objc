@@ -15,4 +15,5 @@
 @property (nonatomic, copy) NSString *addressRegion;
 @property (nonatomic, copy) NSString *postalCode;
 @property (nonatomic, copy) NSString *addressCountry;
++ (instancetype) locationFromDescriptionString:(NSString *) description;
 @end

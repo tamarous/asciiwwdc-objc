@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "DBManager.h"
 
 @interface Session : NSObject
 @property (nonatomic, copy) NSString *sessionID;
@@ -19,7 +18,7 @@
 + (NSString *) stringForInsertSession:(Session *) session;
 + (NSString *) stringForUpdateSession:(Session *) session;
 + (NSString *) stringForInsertOrReplace:(Session *) session;
-- (BOOL) save;
-- (BOOL) update;
-- (BOOL) insertOrReplace;
+//- (BOOL) save;
+//- (BOOL) update;
+//- (BOOL) insertOrReplace;
 @end

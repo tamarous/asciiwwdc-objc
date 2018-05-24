@@ -10,8 +10,6 @@
 		76D350B5E55A8C30798C4B93 /* libPods-ASCIIWWDC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D9C82E92361BFD422D2F0CC /* libPods-ASCIIWWDC.a */; };
 		BB42E10420B075ED00625224 /* DBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BB42E10320B075ED00625224 /* DBManager.m */; };
 		BB6DA71920AC8CA800747820 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6DA71820AC8CA800747820 /* AppDelegate.m */; };
-		BB6DA71C20AC8CA800747820 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6DA71B20AC8CA800747820 /* ViewController.m */; };
-		BB6DA71F20AC8CA800747820 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB6DA71D20AC8CA800747820 /* Main.storyboard */; };
 		BB6DA72120AC8CA900747820 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB6DA72020AC8CA900747820 /* Assets.xcassets */; };
 		BB6DA72420AC8CA900747820 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB6DA72220AC8CA900747820 /* LaunchScreen.storyboard */; };
 		BB6DA72720AC8CA900747820 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6DA72620AC8CA900747820 /* main.m */; };
@@ -36,9 +34,6 @@
 		BB6DA71420AC8CA800747820 /* ASCIIWWDC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASCIIWWDC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB6DA71720AC8CA800747820 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		BB6DA71820AC8CA800747820 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		BB6DA71A20AC8CA800747820 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		BB6DA71B20AC8CA800747820 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		BB6DA71E20AC8CA800747820 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BB6DA72020AC8CA900747820 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BB6DA72320AC8CA900747820 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BB6DA72520AC8CA900747820 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -122,9 +117,6 @@
 				BB6DA72D20AC91A800747820 /* Model */,
 				BB6DA71720AC8CA800747820 /* AppDelegate.h */,
 				BB6DA71820AC8CA800747820 /* AppDelegate.m */,
-				BB6DA71A20AC8CA800747820 /* ViewController.h */,
-				BB6DA71B20AC8CA800747820 /* ViewController.m */,
-				BB6DA71D20AC8CA800747820 /* Main.storyboard */,
 				BB6DA72020AC8CA900747820 /* Assets.xcassets */,
 				BB6DA72220AC8CA900747820 /* LaunchScreen.storyboard */,
 				BB6DA72520AC8CA900747820 /* Info.plist */,
@@ -246,7 +238,6 @@
 			files = (
 				BB6DA72420AC8CA900747820 /* LaunchScreen.storyboard in Resources */,
 				BB6DA72120AC8CA900747820 /* Assets.xcassets in Resources */,
-				BB6DA71F20AC8CA800747820 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,7 +305,6 @@
 				BBAC694820ADB3A6001F5D59 /* ParserManager.m in Sources */,
 				BBF85D9420B0019D00DAFE1E /* MyWebViewController.m in Sources */,
 				BBF85D9120AFD79C00DAFE1E /* TrackHeaderView.m in Sources */,
-				BB6DA71C20AC8CA800747820 /* ViewController.m in Sources */,
 				BBAC693C20ADA97E001F5D59 /* Location.m in Sources */,
 				BBAC693920ADA877001F5D59 /* Conference.m in Sources */,
 				BBAC694520ADB014001F5D59 /* ConferencesTableViewController.m in Sources */,
@@ -331,14 +321,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		BB6DA71D20AC8CA800747820 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BB6DA71E20AC8CA800747820 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		BB6DA72220AC8CA900747820 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

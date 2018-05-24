@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Session.h"
+
 @interface Track : NSObject
 @property (nonatomic, copy) NSString *trackName;
-@property (nonatomic, copy) NSArray<Session *> *sessions;
+@property (nonatomic, copy) NSArray *sessions;
+
 @end

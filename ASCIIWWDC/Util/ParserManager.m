@@ -37,11 +37,11 @@
     for(int i = 0; i < dtNodes.count; i++) {
         HTMLElement *dtNode = dtNodes[i];
         HTMLElement *ddNode = ddNodes[i];
-        Session *session = [[Session alloc] init];
-        session.sessionID = dtNode.attributes[@"id"];
-        session.title = [ddNode querySelector:@"a"].attributes[@"title"];
-        session.urlString = [ddNode querySelector:@"a"].attributes[@"href"];
-        [sessions addObject:session];
+        Session *thisSession = [[Session alloc] init];
+        thisSession.sessionID = dtNode.attributes[@"id"];
+        thisSession.title = [ddNode querySelector:@"a"].attributes[@"title"];
+        thisSession.urlString = [ddNode querySelector:@"a"].attributes[@"href"];
+        [sessions addObject:thisSession];
     }
     return [sessions copy];
 }

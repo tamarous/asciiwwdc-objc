@@ -15,23 +15,12 @@ static NSString * CONFERENCE_TABLE_NAME = @"CONFERENCES";
     return desc;
 }
 
-- (BOOL) save {
-    if (! [[DBManager sharedManager] tableExists:CONFERENCE_TABLE_NAME]) {
-        [[DBManager sharedManager] createTable:CONFERENCE_TABLE_NAME statementString: [[self class] stringForCreateTable]];
-    }
-    return [[DBManager sharedManager] executeInsertString:[[self class] stringForInsertConference:self] inTable:CONFERENCE_TABLE_NAME];
-}
-
-- (BOOL) update {
-    return [[DBManager sharedManager] executeUpdateString:[[self class] stringForUpdateConference:self] inTable:CONFERENCE_TABLE_NAME];
-}
-
 + (NSString *) tableName {
     return @"CONFERENCES";
 }
 
 + (NSString *) stringForCreateTable {
-    NSString *str = [NSString stringWithFormat:@"CREATE TABLE %@ IF NOT EXISTS (NAME TEXT PRIMARY KEY NOT NULL, LOGO_URL_STRING TEXT NOT NULL, SHORT_DESCRIPTION TEXT NOT NULL, TIME TEXT NOT NULL, LOCATION TEXT NOT NULL);", CONFERENCE_TABLE_NAME];
+    NSString *str = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ (NAME TEXT PRIMARY KEY NOT NULL, LOGO_URL_STRING TEXT NOT NULL, SHORT_DESCRIPTION TEXT NOT NULL, TIME TEXT NOT NULL, LOCATION TEXT NOT NULL);", CONFERENCE_TABLE_NAME];
     return str;
 }
 

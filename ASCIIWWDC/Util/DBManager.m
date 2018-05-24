@@ -7,7 +7,6 @@
 //
 
 #import "DBManager.h"
-#import "Session.h"
 
 
 @interface DBManager()
@@ -126,8 +125,122 @@
     return YES;
 }
 
-- (BOOL)saveArrays:(NSArray *)arrays inTable:(NSString *)tableName {
-    
-    return YES;
+
+- (BOOL) saveConference:(Conference *)conference {
+    NSAssert([self databaseExists], @"database not existed");
+    if (! [self tableExists:[Conference tableName]]) {
+        [self createTable:[Conference tableName] statementString:[Conference stringForCreateTable]];
+    }
+    return [self executeInsertString:[Conference stringForInsertConference:conference] inTable:[Conference tableName]];
 }
+
+- (BOOL) updateConference:(Conference *)conference {
+    return [self executeUpdateString:[Conference stringForUpdateConference:conference] inTable:[Conference tableName]];
+}
+
+- (BOOL)updateSession:(Session *)session {
+    return [self executeUpdateString:[Session stringForUpdateSession:session] inTable:[Session tableName]];
+}
+
+- (BOOL)saveConferencesArray:(NSArray *)conferences {
+    NSAssert([self databaseExists], @"database not existed");
+    @try{
+        if ([self.dataBase open]) {
+            if (! [self tableExists:[Conference tableName]]) {
+                [self createTable:[Conference tableName] statementString:[Conference stringForCreateTable]];
+            }
+            [self.dataBase beginTransaction];
+            for(Conference *conference in conferences) {
+                NSString *insertStr = [Conference stringForInsertConference:conference];
+                NSLog(@"%@", insertStr);
+                BOOL res = [self.dataBase executeUpdate:insertStr];
+                if (! res) {
+                    NSLog(@"failed insert %@", conference.description);
+                }
+                if ([self.dataBase hadError]) {
+                    NSLog(@"Error: %@", self.dataBase.lastError.domain);
+                }
+            }
+            [self.dataBase commit];
+            [self.dataBase close];
+            return YES;
+        }
+    } @catch(NSException *e) {
+        [self.dataBase rollback];
+    }
+    return NO;
+}
+
+- (BOOL) saveSession:(Session *)session {
+    NSAssert([self databaseExists], @"database not existed");
+    if (! [self tableExists:[Session tableName]]) {
+        [self createTable:[Session tableName] statementString:[Session stringForCreateTable]];
+    }
+    return [self executeInsertString:[Session stringForInsertSession:session] inTable:[Session tableName]];
+}
+
+- (BOOL) saveSessionsArray:(NSArray *)sessions {
+    NSAssert([self databaseExists], @"database not existed");
+    @try{
+        if ([self.dataBase open]) {
+            if (! [self tableExists:[Session tableName]]) {
+                [self createTable:[Session tableName] statementString:[Session stringForCreateTable]];
+            }
+            [self.dataBase beginTransaction];
+            for(Session *session in sessions) {
+                NSString *insertStr = [Session stringForInsertSession:session];
+                [self.dataBase executeUpdate:insertStr];
+            }
+            [self.dataBase commit];
+            [self.dataBase close];
+            return YES;
+        }
+    } @catch(NSException *e) {
+        [self.dataBase rollback];
+    }
+    return NO;
+}
+
+- (NSArray *)loadSessionsArrayFromDatabase {
+    if ([self.dataBase tableExists:[Conference tableName]]) {
+        return nil;
+    }
+    
+    NSMutableArray *sessions = [NSMutableArray array];
+    if ([self.dataBase open]) {
+        FMResultSet *set = [self.dataBase executeQueryWithFormat:@"SELECT * FROM %@;",[Session tableName]];
+        while([set next]) {
+            Session *session = [[Session alloc] init];
+            session.urlString = [set stringForColumn:@"URL_STRING"];
+            session.title = [set stringForColumn:@"TITLE"];
+            session.sessionID = [set stringForColumn:@"SESSION_ID"];
+            [sessions addObject:session];
+        }
+        [self.dataBase close];
+    }
+    return [sessions copy];
+}
+
+- (NSArray *) loadConferencesArrayFromDatabase {
+    if ([self.dataBase tableExists:[Conference tableName]]) {
+        return nil;
+    }
+    
+    NSMutableArray *conferences = [NSMutableArray array];
+    if ([self.dataBase open]) {
+        FMResultSet *set = [self.dataBase executeQueryWithFormat:@"SELECT * FROM %@;", [Conference tableName]];
+        while ([set next]) {
+            Conference *conference = [[Conference alloc] init];
+            conference.name = [set stringForColumn:@"TEXT"];
+            conference.shortDescription = [set stringForColumn:@"SHORT_DESCRIPTION"];
+            conference.logoUrlString = [set stringForColumn:@"LOGO_URL_STRING"];
+            conference.location = [Location locationFromDescriptionString:[set stringForColumn:@"LOCATION"]];
+            conference.time = [set stringForColumn:@"TIME"];
+            [conferences addObject:conference];
+        }
+        [self.dataBase close];
+    }
+    return [conferences copy];
+}
+
 @end

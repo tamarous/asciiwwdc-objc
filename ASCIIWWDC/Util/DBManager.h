@@ -8,9 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import <FMDB.h>
+#import "Conference.h"
+#import "Session.h"
 @interface DBManager : NSObject
 
 + (instancetype) sharedManager;
+
+- (BOOL) tableExists:(NSString *) tableName;
 
 - (BOOL) createTable:(NSString *)tableName statementString:(NSString *)statementString;
 
@@ -18,7 +22,19 @@
 
 - (BOOL) executeUpdateString:(NSString *)updateString inTable:(NSString *)tableName;
 
-- (BOOL) tableExists:(NSString *) tableName;
+- (BOOL) saveSession:(Session *) session;
 
-- (BOOL) saveArrays:(NSArray *) arrays inTable:(NSString *) tableName;
+- (BOOL) updateSession:(Session *) session;
+
+- (BOOL) saveSessionsArray:(NSArray *) sessions;
+
+- (BOOL) saveConference:(Conference *) conference;
+
+- (BOOL) updateConference:(Conference *) conference;
+
+- (BOOL) saveConferencesArray:(NSArray *) conferences;
+
+- (NSArray *) loadConferencesArrayFromDatabase;
+
+- (NSArray *) loadSessionsArrayFromDatabase;
 @end
