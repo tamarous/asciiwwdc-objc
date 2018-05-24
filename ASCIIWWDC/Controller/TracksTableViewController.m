@@ -22,7 +22,7 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.title = self.title;
+    self.navigationItem.title = self.trackTitle;
     self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAutomatic;
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kSessionTableViewCell];
