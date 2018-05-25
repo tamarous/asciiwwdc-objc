@@ -13,6 +13,7 @@
 		BB6DA72120AC8CA900747820 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB6DA72020AC8CA900747820 /* Assets.xcassets */; };
 		BB6DA72420AC8CA900747820 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB6DA72220AC8CA900747820 /* LaunchScreen.storyboard */; };
 		BB6DA72720AC8CA900747820 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6DA72620AC8CA900747820 /* main.m */; };
+		BBAAD10E20B6FE7000C82264 /* FavoritesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAAD10D20B6FE7000C82264 /* FavoritesTableViewController.m */; };
 		BBAC693920ADA877001F5D59 /* Conference.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC693820ADA877001F5D59 /* Conference.m */; };
 		BBAC693C20ADA97E001F5D59 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC693B20ADA97E001F5D59 /* Location.m */; };
 		BBAC693F20ADACA7001F5D59 /* Track.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC693E20ADACA7001F5D59 /* Track.m */; };
@@ -38,6 +39,8 @@
 		BB6DA72320AC8CA900747820 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BB6DA72520AC8CA900747820 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BB6DA72620AC8CA900747820 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BBAAD10C20B6FE7000C82264 /* FavoritesTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FavoritesTableViewController.h; sourceTree = "<group>"; };
+		BBAAD10D20B6FE7000C82264 /* FavoritesTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FavoritesTableViewController.m; sourceTree = "<group>"; };
 		BBAC693720ADA877001F5D59 /* Conference.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Conference.h; sourceTree = "<group>"; };
 		BBAC693820ADA877001F5D59 /* Conference.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Conference.m; sourceTree = "<group>"; };
 		BBAC693A20ADA97E001F5D59 /* Location.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
@@ -160,6 +163,8 @@
 				BBF85D8D20AFD4F300DAFE1E /* TracksTableViewController.m */,
 				BBF85D9220B0019D00DAFE1E /* MyWebViewController.h */,
 				BBF85D9320B0019D00DAFE1E /* MyWebViewController.m */,
+				BBAAD10C20B6FE7000C82264 /* FavoritesTableViewController.h */,
+				BBAAD10D20B6FE7000C82264 /* FavoritesTableViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -313,6 +318,7 @@
 				BB6DA72720AC8CA900747820 /* main.m in Sources */,
 				BB6DA71920AC8CA800747820 /* AppDelegate.m in Sources */,
 				BBAC693F20ADACA7001F5D59 /* Track.m in Sources */,
+				BBAAD10E20B6FE7000C82264 /* FavoritesTableViewController.m in Sources */,
 				BBF85D8B20AFB31F00DAFE1E /* ConferenceTableViewCell.m in Sources */,
 				BBAC694220ADACEC001F5D59 /* Session.m in Sources */,
 			);

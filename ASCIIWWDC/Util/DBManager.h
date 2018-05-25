@@ -34,7 +34,9 @@
 
 - (BOOL) saveConferencesArray:(NSArray *) conferences;
 
-- (NSArray *) loadConferencesArrayFromDatabase;
+- (NSArray *) loadConferencesArrayFromDatabaseWithQueryString:(NSString *) queryString;
 
-- (NSArray *) loadSessionsArrayFromDatabase;
+- (NSArray *) loadSessionsArrayFromDatabaseWithQueryString:(NSString *) queryString;
+
+- (BOOL) isFavoredForSession:(Session *) session;
 @end

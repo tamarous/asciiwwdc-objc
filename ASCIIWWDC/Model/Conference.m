@@ -30,7 +30,7 @@ static NSString * CONFERENCE_TABLE_NAME = @"CONFERENCES";
 }
 
 + (NSString *)stringForUpdateConference:(Conference *)conference {
-    NSString *str = [NSString stringWithFormat:@"UPDATE OR IGNORE %@ SET LOGO_URL_STRING = %@  SHORT_DESCRIPTION = %@ TIME = %@ LOCATION = %@ WHERE NAME = %@;",CONFERENCE_TABLE_NAME, conference.logoUrlString,conference.shortDescription,conference.time,conference.location.description, conference.name];
+    NSString *str = [NSString stringWithFormat:@"UPDATE OR IGNORE %@ SET LOGO_URL_STRING = \"%@\" ,SHORT_DESCRIPTION = \"%@\", ,TIME = \"%@\" ,LOCATION = \"%@\" WHERE NAME = \"%@\";",CONFERENCE_TABLE_NAME, conference.logoUrlString,conference.shortDescription,conference.time,conference.location.description, conference.name];
     return str;
 }
 @end

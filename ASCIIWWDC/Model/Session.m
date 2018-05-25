@@ -9,25 +9,6 @@
 #import "Session.h"
 static NSString * SESSION_TABLE_NAME = @"SESSIONS";
 @implementation Session
-//- (BOOL) save {
-//    if (! [[DBManager sharedManager] tableExists:SESSION_TABLE_NAME]) {
-//        [[DBManager sharedManager] createTable:SESSION_TABLE_NAME statementString:[[self class] stringForCreateTable]];
-//    }
-//    return [[DBManager sharedManager] executeInsertString:[[self class] stringForInsertSession:self] inTable:SESSION_TABLE_NAME];
-//}
-//- (BOOL) update {
-//    if (! [[DBManager sharedManager] tableExists:SESSION_TABLE_NAME]) {
-//        [[DBManager sharedManager] createTable:SESSION_TABLE_NAME statementString:[[self class] stringForCreateTable]];
-//    }
-//    return [[DBManager sharedManager] executeUpdateString:[[self class] stringForUpdateSession:self] inTable:SESSION_TABLE_NAME];
-//}
-//
-//- (BOOL) insertOrReplace {
-//    if (! [[DBManager sharedManager] tableExists:SESSION_TABLE_NAME]) {
-//        [[DBManager sharedManager] createTable:SESSION_TABLE_NAME statementString:[[self class] stringForCreateTable]];
-//    }
-//    return [[DBManager sharedManager] executeUpdateString:[[self class] stringForInsertOrReplace:self] inTable:SESSION_TABLE_NAME];
-//}
 
 + (NSString *)tableName {
     return @"SESSIONS";
@@ -44,7 +25,7 @@ static NSString * SESSION_TABLE_NAME = @"SESSIONS";
 }
 
 + (NSString *)stringForUpdateSession:(Session *)session {
-    NSString *str = [NSString stringWithFormat:@"UPDATE OR IGNORE %@ SET TITLE = %@ SESSION_ID = %@ FAVORED = %d WHERE URL_STRING = %@;",SESSION_TABLE_NAME,session.title, session.sessionID, session.isFavored, session.urlString];
+    NSString *str = [NSString stringWithFormat:@"UPDATE OR IGNORE %@ SET TITLE = \"%@\", SESSION_ID = \"%@\" ,FAVORED = %d WHERE URL_STRING = \"%@\";",SESSION_TABLE_NAME,session.title, session.sessionID, session.isFavored, session.urlString];
     return str;
 }
 

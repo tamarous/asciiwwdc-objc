@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "ConferencesTableViewController.h"
+#import "FavoritesTableViewController.h"
 @interface AppDelegate ()
 
 @end
@@ -20,10 +21,20 @@
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
+    UITabBarController *tabController = [[UITabBarController alloc] init];
+    
     
     ConferencesTableViewController *conferences = [[ConferencesTableViewController alloc] init];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:conferences];
-    self.window.rootViewController = navigationController;
+    UINavigationController *conferenceNavigationController = [[UINavigationController alloc] initWithRootViewController:conferences];
+    conferenceNavigationController.tabBarItem.title = @"Lists";
+    
+    FavoritesTableViewController *favoriteTableViewController = [[FavoritesTableViewController alloc] init];
+    UINavigationController *favoriteNavigationController = [[UINavigationController alloc] initWithRootViewController:favoriteTableViewController];
+    favoriteNavigationController.tabBarItem.title = @"Favorites";
+    
+    tabController.viewControllers = @[conferenceNavigationController, favoriteNavigationController];
+    
+    self.window.rootViewController = tabController;
     [self.window makeKeyAndVisible];
     return YES;
 }

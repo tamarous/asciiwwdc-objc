@@ -27,7 +27,7 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kSessionTableViewCell];
     
-    [self.tableView setTableFooterView:[[UIView alloc] initWithFrame:CGRectZero]];
+    [self.tableView setTableFooterView:[UIView new]];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     
 }
@@ -60,12 +60,12 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
     }
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSessionTableViewCell forIndexPath:indexPath];
-    if ( ! cell) {
+    if ( !cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kSessionTableViewCell];
     }
+    
     Track *track = [_tracks objectAtIndex:indexPath.section];
     Session *session = [track.sessions objectAtIndex:indexPath.row];
     cell.textLabel.text = session.title;
@@ -94,6 +94,7 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
     NSURL *requestURL = [NSURL URLWithString:session.urlString relativeToURL:[NSURL URLWithString:kASCIIWWDCHomepageURLString]];
     
     MyWebViewController *webViewController = [[MyWebViewController alloc] init];
+    webViewController.hidesBottomBarWhenPushed = YES;
     webViewController.requestURL = requestURL;
     webViewController.session = session;
     [self.navigationController pushViewController:webViewController animated:YES];

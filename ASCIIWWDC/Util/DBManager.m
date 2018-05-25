@@ -152,7 +152,6 @@
             [self.dataBase beginTransaction];
             for(Conference *conference in conferences) {
                 NSString *insertStr = [Conference stringForInsertConference:conference];
-                NSLog(@"%@", insertStr);
                 BOOL res = [self.dataBase executeUpdate:insertStr];
                 if (! res) {
                     NSLog(@"failed insert %@", conference.description);
@@ -201,19 +200,23 @@
     return NO;
 }
 
-- (NSArray *)loadSessionsArrayFromDatabase {
-    if ([self.dataBase tableExists:[Conference tableName]]) {
-        return nil;
-    }
-    
+- (NSArray *)loadSessionsArrayFromDatabaseWithQueryString:(NSString *)queryString {
     NSMutableArray *sessions = [NSMutableArray array];
     if ([self.dataBase open]) {
-        FMResultSet *set = [self.dataBase executeQueryWithFormat:@"SELECT * FROM %@;",[Session tableName]];
+        if (! [self.dataBase tableExists:[Session tableName]]) {
+            return nil;
+        }
+        if (queryString == nil) {
+            queryString = [NSString stringWithFormat:@"SELECT * FROM %@;", [Session tableName]];
+        }
+        
+        FMResultSet *set = [self.dataBase executeQuery:queryString];
         while([set next]) {
             Session *session = [[Session alloc] init];
             session.urlString = [set stringForColumn:@"URL_STRING"];
             session.title = [set stringForColumn:@"TITLE"];
             session.sessionID = [set stringForColumn:@"SESSION_ID"];
+            session.isFavored = [set intForColumn:@"FAVORED"];
             [sessions addObject:session];
         }
         [self.dataBase close];
@@ -221,14 +224,18 @@
     return [sessions copy];
 }
 
-- (NSArray *) loadConferencesArrayFromDatabase {
-    if ([self.dataBase tableExists:[Conference tableName]]) {
-        return nil;
-    }
+- (NSArray *) loadConferencesArrayFromDatabaseWithQueryString:(NSString *)queryString {
     
     NSMutableArray *conferences = [NSMutableArray array];
     if ([self.dataBase open]) {
-        FMResultSet *set = [self.dataBase executeQueryWithFormat:@"SELECT * FROM %@;", [Conference tableName]];
+        if (! [self.dataBase tableExists:[Conference tableName]]) {
+            return nil;
+        }
+        if (queryString == nil) {
+            queryString = [NSString stringWithFormat:@"SELECT * FROM %@", [Conference tableName]];
+        }
+        
+        FMResultSet *set = [self.dataBase executeQuery:queryString];
         while ([set next]) {
             Conference *conference = [[Conference alloc] init];
             conference.name = [set stringForColumn:@"TEXT"];
@@ -241,6 +248,21 @@
         [self.dataBase close];
     }
     return [conferences copy];
+}
+
+- (BOOL) isFavoredForSession:(Session *)session {
+    if ( ![self tableExists:[Session tableName]]) {
+        return NO;
+    }
+    int result = NO;
+    if ([self.dataBase open]) {
+        NSString *sql = [NSString stringWithFormat:@"SELECT FAVORED FROM %@ WHERE URL_STRING = \"%@\";", [Session tableName],session.urlString];
+        FMResultSet *set = [self.dataBase executeQuery:sql];
+        while ([set next]) {
+            result = [set intForColumn:@"FAVORED"];
+        }
+    }
+    return result == 1;
 }
 
 @end

@@ -16,6 +16,7 @@
 
 @interface MyWebViewController () <WKUIDelegate, WKNavigationDelegate>
 @property (nonatomic, strong) WKWebView *webView;
+@property (nonatomic, assign) BOOL dataSaved;
 @end
 
 @implementation MyWebViewController
@@ -29,13 +30,26 @@
     
     UIBarButtonItem *saveButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(save)];
     
-    
     UIBarButtonItem *favorButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(showActions)];
     
     self.navigationItem.rightBarButtonItems = @[saveButtonItem,favorButtonItem];
     
     NSLog(@"start load session:%@", [self.requestURL absoluteString]);
+    
     [self.webView loadRequest:[NSURLRequest requestWithURL:self.requestURL]];
+    
+}
+
+- (void) viewWillAppear:(BOOL)animated {
+    
+}
+
+- (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if (! self.dataSaved) {
+        [self save];
+        self.dataSaved = YES;
+    }
 }
 
 - (void) showActions {
@@ -57,6 +71,7 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
+
 - (void) toggleFavored {
     self.session.isFavored = !self.session.isFavored;
     [SVProgressHUD showWithStatus:@"Updating..."];
@@ -70,12 +85,9 @@
 }
 
 - (void) save {
-    [SVProgressHUD showWithStatus:@"Saving..."];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[DBManager sharedManager] saveSession:self.session];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [SVProgressHUD showSuccessWithStatus:@"Saved"];
-            [SVProgressHUD dismissWithDelay:1];
         });
     });
 }
@@ -97,6 +109,7 @@
     
     UIEdgeInsets safeArea = self.view.safeAreaInsets;
     CGRect safeFrame = CGRectMake(safeArea.left, safeArea.top, self.view.frame.size.width, self.view.frame.size.height);
+    
     _webView = [[WKWebView alloc] initWithFrame:safeFrame configuration:configuration];
     _webView.navigationDelegate = self;
     _webView.UIDelegate = self;

@@ -38,11 +38,12 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
     UIEdgeInsets safeArea = self.view.safeAreaInsets;
     self.tableView.frame = CGRectMake(safeArea.left, safeArea.top, self.tableView.bounds.size.width, self.tableView.bounds.size.height);
     
+    self.tableView.tableFooterView = [UIView new];
+    
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kLoadingTableViewCell];
     [self.tableView registerClass:[ConferenceTableViewCell class] forCellReuseIdentifier:kConferenceTableViewCell];
     
     self.cellBlock = ^(ConferenceTableViewCell *cell, Conference *conference) {
-        //NSLog(@"%@", conference.description);
         
         [cell.logoImageView sd_setImageWithURL:[NSURL URLWithString:conference.logoUrlString relativeToURL:[NSURL URLWithString:kASCIIWWDCHomepageURLString]]];
         
@@ -79,7 +80,8 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
 
 - (void) loadContents {
     self.isLoading = true;
-    // 从磁盘中加载的功能暂时先不做，因为还没有办法对 Track 进行序列化
+    
+//    从磁盘中加载的功能暂时先不做，因为还没有办法对 Track 进行序列化
 //    if ([[DBManager sharedManager] tableExists:[Conference tableName]]) {
 //        self.conferences = [[DBManager sharedManager] loadConferencesArrayFromDatabase];
 //        if (self.conferences != nil) {
@@ -147,6 +149,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kLoadingTableViewCell];
         }
         cell.textLabel.text = @"isLoading...";
+        cell.textLabel.textAlignment = NSTextAlignmentCenter;
         return cell;
     } else {
         ConferenceTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kConferenceTableViewCell forIndexPath:indexPath];

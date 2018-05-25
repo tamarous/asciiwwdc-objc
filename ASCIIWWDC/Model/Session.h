@@ -13,12 +13,10 @@
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *urlString;
 @property (nonatomic, assign) BOOL isFavored;
+
 + (NSString *) tableName;
 + (NSString *) stringForCreateTable;
 + (NSString *) stringForInsertSession:(Session *) session;
 + (NSString *) stringForUpdateSession:(Session *) session;
 + (NSString *) stringForInsertOrReplace:(Session *) session;
-//- (BOOL) save;
-//- (BOOL) update;
-//- (BOOL) insertOrReplace;
 @end
