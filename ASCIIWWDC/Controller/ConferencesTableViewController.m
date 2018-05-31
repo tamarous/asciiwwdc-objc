@@ -165,6 +165,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     TracksTableViewController *tracksController = [[TracksTableViewController alloc] init];
+    tracksController.hidesBottomBarWhenPushed = YES;
     Conference *conference = [self.conferences objectAtIndex:indexPath.row];
     tracksController.tracks = conference.tracks;
     tracksController.trackTitle = conference.name;

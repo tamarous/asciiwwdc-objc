@@ -19,9 +19,7 @@
     self = [super init];
     if (self) {
         if ([self databaseExists]) {
-            
         } else {
-            
             [self createDatabase];
             NSLog(@"database created");
         }

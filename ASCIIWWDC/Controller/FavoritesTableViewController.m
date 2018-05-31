@@ -52,6 +52,7 @@ static NSString * const kFavoritesTableViewCell = @"FavoritesTableViewCell";
                 [self.tableView reloadData];
             } else {
                 self.dataSetEmpty = YES;
+                [self.tableView reloadData];
             }
         });
     });
@@ -100,7 +101,7 @@ static NSString * const kFavoritesTableViewCell = @"FavoritesTableViewCell";
 
 #pragma mark - DZNEmptyDataSetSource
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView {
-    NSString *str = @"看起来你还没有收藏哦~";
+    NSString *str = @"空空如也~";
     NSDictionary *attributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:18.0f],
                                  NSForegroundColorAttributeName:[UIColor darkGrayColor]
                                  };

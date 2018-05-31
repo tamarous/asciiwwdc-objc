@@ -17,6 +17,7 @@
 @interface MyWebViewController () <WKUIDelegate, WKNavigationDelegate>
 @property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic, assign) BOOL dataSaved;
+@property (nonatomic, strong) UIBarButtonItem *favorButtonItem;
 @end
 
 @implementation MyWebViewController
@@ -30,9 +31,10 @@
     
     UIBarButtonItem *saveButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(save)];
     
-    UIBarButtonItem *favorButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(showActions)];
+    NSString *imageName = (self.session.isFavored ? @"Favor":@"Unfavor");
+    self.favorButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName] style:UIBarButtonItemStylePlain target:self action:@selector(favorite)];
     
-    self.navigationItem.rightBarButtonItems = @[saveButtonItem,favorButtonItem];
+    self.navigationItem.rightBarButtonItems = @[saveButtonItem,self.favorButtonItem];
     
     NSLog(@"start load session:%@", [self.requestURL absoluteString]);
     
@@ -40,16 +42,31 @@
     
 }
 
-- (void) viewWillAppear:(BOOL)animated {
+- (void) favorite {
+    UIView *itemView = [self.favorButtonItem performSelector:@selector(view)];
+    UIImageView *imageView = [[itemView.subviews firstObject].subviews firstObject];
     
-}
-
-- (void) viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    if (! self.dataSaved) {
-        [self save];
-        self.dataSaved = YES;
+    if (self.session.isFavored) {
+        self.favorButtonItem.image = [UIImage imageNamed:@"Unfavor"];
+        imageView.contentMode = UIViewContentModeScaleAspectFill;
+        imageView.autoresizingMask = UIViewAutoresizingNone;
+        imageView.clipsToBounds = NO;
+        imageView.transform = CGAffineTransformMakeScale(0, 0);
+        [UIView animateWithDuration:1.0 delay:0.5 usingSpringWithDamping:0.5 initialSpringVelocity:10 options:UIViewAnimationOptionCurveLinear animations:^{
+            imageView.transform = CGAffineTransformIdentity;
+        } completion:nil];
+    } else {
+        self.favorButtonItem.image = [UIImage imageNamed:@"Favor"];
+        imageView.contentMode = UIViewContentModeScaleAspectFill;
+        imageView.autoresizingMask = UIViewAutoresizingNone;
+        imageView.clipsToBounds = NO;
+        imageView.transform = CGAffineTransformMakeScale(0, 0);
+        [UIView animateWithDuration:1.0 delay:0.5 usingSpringWithDamping:0.5 initialSpringVelocity:10 options:UIViewAnimationOptionCurveLinear animations:^{
+            imageView.transform = CGAffineTransformIdentity;
+        } completion:nil];
     }
+    
+    [self toggleFavored];
 }
 
 - (void) showActions {
@@ -90,6 +107,11 @@
         dispatch_async(dispatch_get_main_queue(), ^{
         });
     });
+    
+//    NSString *jsString = @"document.getElementsByTagName('body')[0].style.webkitTextSizeAdjust=";
+//    NSString *fontScale = @"'125%'";
+//    jsString = [jsString stringByAppendingString:fontScale];
+//    [_webView evaluateJavaScript:jsString completionHandler:nil];
 }
 
 - (WKWebView *) webView {

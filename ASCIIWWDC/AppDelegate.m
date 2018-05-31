@@ -27,10 +27,12 @@
     ConferencesTableViewController *conferences = [[ConferencesTableViewController alloc] init];
     UINavigationController *conferenceNavigationController = [[UINavigationController alloc] initWithRootViewController:conferences];
     conferenceNavigationController.tabBarItem.title = @"Lists";
+    conferenceNavigationController.tabBarItem.image = [UIImage imageNamed:@"Lists"];
     
     FavoritesTableViewController *favoriteTableViewController = [[FavoritesTableViewController alloc] init];
     UINavigationController *favoriteNavigationController = [[UINavigationController alloc] initWithRootViewController:favoriteTableViewController];
     favoriteNavigationController.tabBarItem.title = @"Favorites";
+    favoriteNavigationController.tabBarItem.image = [UIImage imageNamed:@"Unfavor"];
     
     tabController.viewControllers = @[conferenceNavigationController, favoriteNavigationController];
     
