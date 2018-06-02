@@ -11,10 +11,12 @@
 #import <WebKit/WKUserContentController.h>
 #import <WebKit/WKUserScript.h>
 #import <WebKit/WKWebViewConfiguration.h>
+#import "ChangeFontSizePresentationController.h"
 #import "DBManager.h"
+#import "ChangeFontSizeViewController.h"
 #import <SVProgressHUD.h>
 
-@interface MyWebViewController () <WKUIDelegate, WKNavigationDelegate>
+@interface MyWebViewController () <WKUIDelegate, UIViewControllerTransitioningDelegate>
 @property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic, assign) BOOL dataSaved;
 @property (nonatomic, strong) UIBarButtonItem *favorButtonItem;
@@ -28,18 +30,19 @@
     self.navigationItem.title = self.session.title;
     [self.navigationItem.titleView sizeToFit];
     self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAutomatic;
-    
-    UIBarButtonItem *saveButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSave target:self action:@selector(save)];
+
+    UIBarButtonItem *actionsButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(showActions)];
     
     NSString *imageName = (self.session.isFavored ? @"Favor":@"Unfavor");
     self.favorButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName] style:UIBarButtonItemStylePlain target:self action:@selector(favorite)];
     
-    self.navigationItem.rightBarButtonItems = @[saveButtonItem,self.favorButtonItem];
+    
+    self.navigationItem.rightBarButtonItems = @[actionsButtonItem,self.favorButtonItem];
     
     NSLog(@"start load session:%@", [self.requestURL absoluteString]);
     
+    [self save];
     [self.webView loadRequest:[NSURLRequest requestWithURL:self.requestURL]];
-    
 }
 
 - (void) favorite {
@@ -71,32 +74,32 @@
 
 - (void) showActions {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    UIAlertAction *favorAction = nil;
-    if (self.session.isFavored) {
-        favorAction = [UIAlertAction actionWithTitle:@"取消收藏" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self toggleFavored];
-        }];
-    } else {
-        favorAction = [UIAlertAction actionWithTitle:@"收藏" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-            [self toggleFavored];
-        }];
-    }
+    
+    UIAlertAction *saveAction = [UIAlertAction actionWithTitle:@"保存" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self save];
+    }];
+    
+    UIAlertAction *adjustFontAction = [UIAlertAction actionWithTitle:@"调整字体" style: UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//        ChangeFontSizeViewController *changeFontSizeVC = [[ChangeFontSizeViewController alloc] init];
+//        changeFontSizeVC.modalPresentationStyle = UIModalPresentationCustom;
+//        changeFontSizeVC.transitioningDelegate = self;
+//        [self presentViewController:changeFontSizeVC animated:YES completion:nil];
+    }];
     
     UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-    [alertController addAction:favorAction];
+    [alertController addAction:adjustFontAction];
+    [alertController addAction:saveAction];
     [alertController addAction:cancelAction];
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-
 - (void) toggleFavored {
     self.session.isFavored = !self.session.isFavored;
-    [SVProgressHUD showWithStatus:@"Updating..."];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[DBManager sharedManager] updateSession:self.session];
         dispatch_async(dispatch_get_main_queue(), ^{
             [SVProgressHUD showSuccessWithStatus:@"Updated"];
-            [SVProgressHUD dismissWithDelay:1];
+            [SVProgressHUD dismissWithDelay:1.5];
         });
     });
 }
@@ -104,8 +107,6 @@
 - (void) save {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[DBManager sharedManager] saveSession:self.session];
-        dispatch_async(dispatch_get_main_queue(), ^{
-        });
     });
     
 //    NSString *jsString = @"document.getElementsByTagName('body')[0].style.webkitTextSizeAdjust=";
@@ -133,7 +134,6 @@
     CGRect safeFrame = CGRectMake(safeArea.left, safeArea.top, self.view.frame.size.width, self.view.frame.size.height);
     
     _webView = [[WKWebView alloc] initWithFrame:safeFrame configuration:configuration];
-    _webView.navigationDelegate = self;
     _webView.UIDelegate = self;
     [self.view addSubview:_webView];
     return _webView;
@@ -154,18 +154,9 @@
 - (void) webView:(WKWebView *) webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation {
 }
 
-- (void) webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-
-//    NSMutableString *str = [NSMutableString string];
-//    [str appendString:@"var header = document.getElementsByTagName(\"header\")[0];"];
-//    [str appendString:@"header.parentNode.removeChild(header);"];
-//    [str appendString:@"var footer = document.getElementsByTagName(\"footer\")[0];"];
-//    [str appendString:@"footer.parentNode.removeChild(footer);"];
-//
-//    [self.webView evaluateJavaScript:str completionHandler:^(id _Nullable ret, NSError * _Nullable error) {
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            self.webView.hidden = NO;
-//        });
-//    }];
+#pragma mark - UIViewControllerTransitioningDelegate
+- (UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source {
+    ChangeFontSizePresentationController *presentationController = [[ChangeFontSizePresentationController alloc] initWithPresentedViewController:presented presentingViewController:presenting];
+    return presentationController;
 }
 @end
