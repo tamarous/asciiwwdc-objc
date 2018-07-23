@@ -116,26 +116,27 @@
 }
 
 - (WKWebView *) webView {
-    NSMutableString *str = [NSMutableString string];
-    [str appendString:@"var header = document.getElementsByTagName(\"header\")[0];"];
-    [str appendString:@"header.parentNode.removeChild(header);"];
-    [str appendString:@"var footer = document.getElementsByTagName(\"footer\")[0];"];
-    [str appendString:@"footer.parentNode.removeChild(footer);"];
-    
-    WKUserScript *userScript = [[WKUserScript alloc] initWithSource:str injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
-    
-    WKUserContentController *contentController = [[WKUserContentController alloc] init];
-    [contentController addUserScript:userScript];
-    
-    WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
-    configuration.userContentController = contentController;
-    
-    UIEdgeInsets safeArea = self.view.safeAreaInsets;
-    CGRect safeFrame = CGRectMake(safeArea.left, safeArea.top, self.view.frame.size.width, self.view.frame.size.height);
-    
-    _webView = [[WKWebView alloc] initWithFrame:safeFrame configuration:configuration];
-    _webView.UIDelegate = self;
-    [self.view addSubview:_webView];
+    if (!_webView) {
+        NSMutableString *str = [NSMutableString string];
+        [str appendString:@"var header = document.getElementsByTagName(\"header\")[0];"];
+        [str appendString:@"header.parentNode.removeChild(header);"];
+        [str appendString:@"var footer = document.getElementsByTagName(\"footer\")[0];"];
+        [str appendString:@"footer.parentNode.removeChild(footer);"];
+        
+        WKUserScript *userScript = [[WKUserScript alloc] initWithSource:str injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
+        
+        WKUserContentController *contentController = [[WKUserContentController alloc] init];
+        [contentController addUserScript:userScript];
+        
+        WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
+        configuration.userContentController = contentController;
+        
+        UIEdgeInsets safeArea = self.view.safeAreaInsets;
+        CGRect safeFrame = CGRectMake(safeArea.left, safeArea.top, self.view.frame.size.width, self.view.frame.size.height);
+        _webView = [[WKWebView alloc] initWithFrame:safeFrame configuration:configuration];
+        _webView.UIDelegate = self;
+        [self.view addSubview:_webView];
+    }
     return _webView;
 }
 
