@@ -11,12 +11,10 @@
 #import <WebKit/WKUserContentController.h>
 #import <WebKit/WKUserScript.h>
 #import <WebKit/WKWebViewConfiguration.h>
-#import "ChangeFontSizePresentationController.h"
 #import "DBManager.h"
-#import "ChangeFontSizeViewController.h"
 #import <SVProgressHUD.h>
 
-@interface MyWebViewController () <WKUIDelegate, UIViewControllerTransitioningDelegate>
+@interface MyWebViewController () <WKUIDelegate>
 @property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic, assign) BOOL dataSaved;
 @property (nonatomic, strong) UIBarButtonItem *favorButtonItem;
@@ -31,13 +29,12 @@
     [self.navigationItem.titleView sizeToFit];
     self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAutomatic;
 
-    UIBarButtonItem *actionsButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(showActions)];
     
     NSString *imageName = (self.session.isFavored ? @"Favor":@"Unfavor");
     self.favorButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName] style:UIBarButtonItemStylePlain target:self action:@selector(favorite)];
     
     
-    self.navigationItem.rightBarButtonItems = @[actionsButtonItem,self.favorButtonItem];
+    self.navigationItem.rightBarButtonItem = self.favorButtonItem;
     
     NSLog(@"start load session:%@", [self.requestURL absoluteString]);
     
@@ -72,27 +69,6 @@
     [self toggleFavored];
 }
 
-- (void) showActions {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    UIAlertAction *saveAction = [UIAlertAction actionWithTitle:@"保存" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [self save];
-    }];
-    
-    UIAlertAction *adjustFontAction = [UIAlertAction actionWithTitle:@"调整字体" style: UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-//        ChangeFontSizeViewController *changeFontSizeVC = [[ChangeFontSizeViewController alloc] init];
-//        changeFontSizeVC.modalPresentationStyle = UIModalPresentationCustom;
-//        changeFontSizeVC.transitioningDelegate = self;
-//        [self presentViewController:changeFontSizeVC animated:YES completion:nil];
-    }];
-    
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
-    [alertController addAction:adjustFontAction];
-    [alertController addAction:saveAction];
-    [alertController addAction:cancelAction];
-    [self presentViewController:alertController animated:YES completion:nil];
-}
-
 - (void) toggleFavored {
     self.session.isFavored = !self.session.isFavored;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -108,11 +84,6 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[DBManager sharedManager] saveSession:self.session];
     });
-    
-//    NSString *jsString = @"document.getElementsByTagName('body')[0].style.webkitTextSizeAdjust=";
-//    NSString *fontScale = @"'125%'";
-//    jsString = [jsString stringByAppendingString:fontScale];
-//    [_webView evaluateJavaScript:jsString completionHandler:nil];
 }
 
 - (WKWebView *) webView {
@@ -153,11 +124,5 @@
 }
 
 - (void) webView:(WKWebView *) webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation {
-}
-
-#pragma mark - UIViewControllerTransitioningDelegate
-- (UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source {
-    ChangeFontSizePresentationController *presentationController = [[ChangeFontSizePresentationController alloc] initWithPresentedViewController:presented presentingViewController:presenting];
-    return presentationController;
 }
 @end

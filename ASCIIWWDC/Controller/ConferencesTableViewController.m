@@ -23,6 +23,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
 @property (nonatomic, assign) BOOL isLoading;
 @property (nonatomic, copy) configureCellBlock cellBlock;
 @property (nonatomic, assign) BOOL dataSaved;
+@property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 - (void) loadContents;
 @end
 
@@ -31,7 +32,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.navigationItem.title = @"WWDC";
+    self.navigationItem.title = @"ASCIIWWDC";
     self.navigationController.navigationBar.prefersLargeTitles = YES;
     self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
     
@@ -55,6 +56,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
         [cell.shortDescriptionLabel sizeToFit];
         [cell.timeLabel sizeToFit];
     };
+    
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self loadContents];
@@ -81,15 +83,6 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
 - (void) loadContents {
     self.isLoading = true;
     
-//    从磁盘中加载的功能暂时先不做，因为还没有办法对 Track 进行序列化
-//    if ([[DBManager sharedManager] tableExists:[Conference tableName]]) {
-//        self.conferences = [[DBManager sharedManager] loadConferencesArrayFromDatabase];
-//        if (self.conferences != nil) {
-//            NSLog(@"Load conferences from array");
-//            return;
-//        }
-//    }
-    
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
     AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
@@ -108,6 +101,8 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
             self.conferences = [[ParserManager sharedManager]  createConferencesArrayFromResponseObject:responseObject];
             self.isLoading = false;
             dispatch_async(dispatch_get_main_queue(), ^{
+                [self.indicatorView stopAnimating];
+                [self.indicatorView removeFromSuperview];
                 [self.tableView reloadData];
             });
         }
@@ -141,6 +136,15 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
     }
 }
 
+- (UIActivityIndicatorView *) indicatorView {
+    if (!_indicatorView) {
+        _indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        float width = [UIScreen mainScreen].bounds.size.width;
+        _indicatorView.frame = CGRectMake(width/2-18, 4, 36, 36);
+        _indicatorView.hidesWhenStopped = YES;
+    }
+    return _indicatorView;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (_isLoading) {
@@ -148,8 +152,8 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
         if (! cell) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kLoadingTableViewCell];
         }
-        cell.textLabel.text = @"isLoading...";
-        cell.textLabel.textAlignment = NSTextAlignmentCenter;
+        [cell addSubview:self.indicatorView];
+        [self.indicatorView startAnimating];
         return cell;
     } else {
         ConferenceTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kConferenceTableViewCell forIndexPath:indexPath];

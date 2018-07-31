@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ASCIIWWDC/Controller/ChangeFontSizePresentationController.m"
-            timestampString = "549652006.110902"
+            timestampString = "554576527.772481"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "26"
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "ASCIIWWDC/Controller/ChangeFontSizePresentationController.m"
-            timestampString = "549652006.1114039"
+            timestampString = "554576527.772788"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "68"
-            endingLineNumber = "68"
+            startingLineNumber = "67"
+            endingLineNumber = "67"
             landmarkName = "-blackView"
             landmarkType = "7">
          </BreakpointContent>

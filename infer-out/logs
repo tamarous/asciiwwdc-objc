@@ -1,0 +1,23 @@
+[60475][environment] CWD = /Users/tamarous/Downloads/Github/ASCIIWWDC
+[60475][environment] No .inferconfig file found
+[60475][environment] Project root = /Users/tamarous/Downloads/Github/ASCIIWWDC
+[60475][environment] INFER_ARGS = 
+[60475][environment] command line arguments: /usr/local/Cellar/infer/0.13.1/libexec/bin/infer^--^xcodebuild^-workspace^ASCIIWWDC.xcworkspace^-scheme^ASCIIWWDC^-configuration^Debug^-sdk^iphonesimulator^clean
+[60475][environment] Analyzer: checkers
+[60475][environment] Active checkers: annotation reachability (Java), biabduction (C/C++/ObjC, Java), fragment retains view (Java), immutable cast (Java), liveness (C/C++/ObjC), printf args (Java), quandary (C/C++/ObjC, Java), RacerD (C/C++/ObjC, Java), SIOF (C/C++/ObjC)
+[60475][   progress] Capturing using xcodebuild and xcpretty...
+[60475][      debug] Running (xcodebuild -workspace ASCIIWWDC.xcworkspace -scheme ASCIIWWDC -configuration Debug -sdk iphonesimulator clean) | (xcpretty --report json-compilation-database --output /var/folders/l0/k45rvwf11flg88d8gn2fdv7r0000gn/T/cdb.tmp.06d9c8.json)
+[60475][      debug] 
+[60475][      debug] parsing compilation database from /var/folders/l0/k45rvwf11flg88d8gn2fdv7r0000gn/T/cdb.tmp.06d9c8.json
+[60475][      debug] created database with 0 entries
+[60475][      debug] Starting translating 0 files
+[60475][      debug] 
+[60475][   progress] Starting translating 0 files
+[60475][   progress] 
+[60475][  user warn] 
+[60475][  user warn] Nothing to compile. Try running `xcodebuild -workspace ASCIIWWDC.xcworkspace -scheme ASCIIWWDC -configuration Debug -sdk iphonesimulator clean clean` first.
+[60475][   user err] There was nothing to analyze.
+[60475][   user err] 
+[60475][environment] Infer version v0.13.1
+[60475][environment] Copyright 2009 - present Facebook. All Rights Reserved.
+[60475][environment] 

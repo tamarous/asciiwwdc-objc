@@ -13,8 +13,6 @@
 		BB6DA72120AC8CA900747820 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB6DA72020AC8CA900747820 /* Assets.xcassets */; };
 		BB6DA72420AC8CA900747820 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB6DA72220AC8CA900747820 /* LaunchScreen.storyboard */; };
 		BB6DA72720AC8CA900747820 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6DA72620AC8CA900747820 /* main.m */; };
-		BB8B994720C1B097008CD87A /* ChangeFontSizePresentationController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB8B994620C1B097008CD87A /* ChangeFontSizePresentationController.m */; };
-		BB8B994A20C1B9B9008CD87A /* ChangeFontSizeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BB8B994920C1B9B9008CD87A /* ChangeFontSizeViewController.m */; };
 		BBAAD10E20B6FE7000C82264 /* FavoritesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAAD10D20B6FE7000C82264 /* FavoritesTableViewController.m */; };
 		BBAC693920ADA877001F5D59 /* Conference.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC693820ADA877001F5D59 /* Conference.m */; };
 		BBAC693C20ADA97E001F5D59 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC693B20ADA97E001F5D59 /* Location.m */; };
@@ -41,10 +39,6 @@
 		BB6DA72320AC8CA900747820 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BB6DA72520AC8CA900747820 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BB6DA72620AC8CA900747820 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		BB8B994520C1B097008CD87A /* ChangeFontSizePresentationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChangeFontSizePresentationController.h; sourceTree = "<group>"; };
-		BB8B994620C1B097008CD87A /* ChangeFontSizePresentationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChangeFontSizePresentationController.m; sourceTree = "<group>"; };
-		BB8B994820C1B9B9008CD87A /* ChangeFontSizeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChangeFontSizeViewController.h; sourceTree = "<group>"; };
-		BB8B994920C1B9B9008CD87A /* ChangeFontSizeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChangeFontSizeViewController.m; sourceTree = "<group>"; };
 		BBAAD10C20B6FE7000C82264 /* FavoritesTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FavoritesTableViewController.h; sourceTree = "<group>"; };
 		BBAAD10D20B6FE7000C82264 /* FavoritesTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FavoritesTableViewController.m; sourceTree = "<group>"; };
 		BBAC693720ADA877001F5D59 /* Conference.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Conference.h; sourceTree = "<group>"; };
@@ -171,10 +165,6 @@
 				BBF85D9320B0019D00DAFE1E /* MyWebViewController.m */,
 				BBAAD10C20B6FE7000C82264 /* FavoritesTableViewController.h */,
 				BBAAD10D20B6FE7000C82264 /* FavoritesTableViewController.m */,
-				BB8B994520C1B097008CD87A /* ChangeFontSizePresentationController.h */,
-				BB8B994620C1B097008CD87A /* ChangeFontSizePresentationController.m */,
-				BB8B994820C1B9B9008CD87A /* ChangeFontSizeViewController.h */,
-				BB8B994920C1B9B9008CD87A /* ChangeFontSizeViewController.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -317,11 +307,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BB8B994A20C1B9B9008CD87A /* ChangeFontSizeViewController.m in Sources */,
 				BBAC694820ADB3A6001F5D59 /* ParserManager.m in Sources */,
 				BBF85D9420B0019D00DAFE1E /* MyWebViewController.m in Sources */,
 				BBF85D9120AFD79C00DAFE1E /* TrackHeaderView.m in Sources */,
-				BB8B994720C1B097008CD87A /* ChangeFontSizePresentationController.m in Sources */,
 				BBAC693C20ADA97E001F5D59 /* Location.m in Sources */,
 				BBAC693920ADA877001F5D59 /* Conference.m in Sources */,
 				BBAC694520ADB014001F5D59 /* ConferencesTableViewController.m in Sources */,
