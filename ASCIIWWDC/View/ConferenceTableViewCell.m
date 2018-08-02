@@ -46,28 +46,28 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     [self.logoImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.contentView.mas_top).with.offset(10);
+        make.top.equalTo(self.contentView.mas_top).with.offset(28);
         make.left.equalTo(self.contentView.mas_left).with.offset(8);
         make.bottom.equalTo(self.contentView.mas_bottom).with.offset(-10);
         make.width.equalTo(self.logoImageView.mas_height);
     }];
     
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.contentView.mas_top).with.offset(10);
+        make.top.equalTo(self.contentView.mas_top).with.offset(28);
         make.left.equalTo(self.logoImageView.mas_right).with.offset(8);
         make.right.equalTo(self.contentView.mas_right).with.offset(-8);
         make.height.equalTo(@24);
     }];
     
     [self.shortDescriptionLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.nameLabel.mas_bottom).with.offset(8);
+        make.top.equalTo(self.nameLabel.mas_bottom).with.offset(12);
         make.left.equalTo(self.logoImageView.mas_right).with.offset(8);
         make.right.equalTo(self.contentView.mas_right).with.offset(-8);
         make.height.equalTo(@20);
     }];
     
     [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.shortDescriptionLabel.mas_bottom).with.offset(8);
+        make.top.equalTo(self.shortDescriptionLabel.mas_bottom).with.offset(12);
         make.left.equalTo(self.logoImageView.mas_right).with.offset(8);
         make.right.equalTo(self.contentView.mas_right).with.offset(-8);
         make.height.equalTo(@20);

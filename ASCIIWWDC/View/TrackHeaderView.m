@@ -33,8 +33,8 @@
     [self setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     
     
-    UIView *underLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.frame.size.height-1, self.frame.size.width, 1)];
-    underLine.backgroundColor = [UIColor blackColor];
+    UIView *underLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.frame.size.height-0.5, self.frame.size.width, 0.5)];
+    underLine.backgroundColor = [UIColor grayColor];
     
     [self addSubview:underLine];
     [self addTarget:self action:@selector(clicked:) forControlEvents:UIControlEventTouchUpInside];

@@ -40,6 +40,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
     self.tableView.frame = CGRectMake(safeArea.left, safeArea.top, self.tableView.bounds.size.width, self.tableView.bounds.size.height);
     
     self.tableView.tableFooterView = [UIView new];
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kLoadingTableViewCell];
     [self.tableView registerClass:[ConferenceTableViewCell class] forCellReuseIdentifier:kConferenceTableViewCell];
@@ -50,7 +51,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
         
         cell.nameLabel.text = conference.name;
         cell.shortDescriptionLabel.text = conference.shortDescription;
-        cell.timeLabel.text = conference.time;
+        cell.timeLabel.text = [[conference.time componentsSeparatedByString:@"T"] firstObject];
         
         [cell.nameLabel sizeToFit];
         [cell.shortDescriptionLabel sizeToFit];
@@ -82,6 +83,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
 
 - (void) loadContents {
     self.isLoading = true;
+
     
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
