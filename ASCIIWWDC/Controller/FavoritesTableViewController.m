@@ -29,6 +29,7 @@ static NSString * const kFavoritesTableViewCell = @"FavoritesTableViewCell";
     self.tableView.rowHeight = 44.0;
     self.tableView.emptyDataSetSource = self;
     self.tableView.emptyDataSetDelegate = self;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     self.tableView.tableFooterView = [UIView new];
 }
 
@@ -103,7 +104,7 @@ static NSString * const kFavoritesTableViewCell = @"FavoritesTableViewCell";
 - (NSAttributedString *)titleForEmptyDataSet:(UIScrollView *)scrollView {
     NSString *str = @"空空如也~";
     NSDictionary *attributes = @{NSFontAttributeName:[UIFont boldSystemFontOfSize:18.0f],
-                                 NSForegroundColorAttributeName:[UIColor darkGrayColor]
+                                 NSForegroundColorAttributeName:[UIColor blueColor]
                                  };
     return [[NSAttributedString alloc] initWithString:str attributes:attributes];
 }
@@ -126,6 +127,9 @@ static NSString * const kFavoritesTableViewCell = @"FavoritesTableViewCell";
     return NO;
 }
 
+- (BOOL) shouldAutorotate {
+    return NO;
+}
 
 
 @end

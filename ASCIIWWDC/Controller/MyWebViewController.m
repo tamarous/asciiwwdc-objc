@@ -13,6 +13,7 @@
 #import <WebKit/WKWebViewConfiguration.h>
 #import "DBManager.h"
 #import <SVProgressHUD.h>
+#import "ZWCacheURLProtocol.h"
 
 @interface MyWebViewController () <WKUIDelegate>
 @property (nonatomic, strong) WKWebView *webView;
@@ -25,21 +26,30 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [ZWCacheURLProtocol startHookNetwork];
+    
+    
     self.navigationItem.title = self.session.title;
     [self.navigationItem.titleView sizeToFit];
     self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAutomatic;
-
+    self.navigationController.navigationBar.translucent = NO;
     
     NSString *imageName = (self.session.isFavored ? @"Favor":@"Unfavor");
     self.favorButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName] style:UIBarButtonItemStylePlain target:self action:@selector(favorite)];
-    
-    
+
     self.navigationItem.rightBarButtonItem = self.favorButtonItem;
-    
-    NSLog(@"start load session:%@", [self.requestURL absoluteString]);
     
     [self save];
     [self.webView loadRequest:[NSURLRequest requestWithURL:self.requestURL]];
+}
+
+
+- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskPortrait;
+}
+
+- (void) dealloc {
+    [ZWCacheURLProtocol stopHookNetwork];
 }
 
 - (void) favorite {
@@ -93,7 +103,7 @@
         [str appendString:@"header.parentNode.removeChild(header);"];
         [str appendString:@"var footer = document.getElementsByTagName(\"footer\")[0];"];
         [str appendString:@"footer.parentNode.removeChild(footer);"];
-        
+    
         WKUserScript *userScript = [[WKUserScript alloc] initWithSource:str injectionTime:WKUserScriptInjectionTimeAtDocumentEnd forMainFrameOnly:YES];
         
         WKUserContentController *contentController = [[WKUserContentController alloc] init];

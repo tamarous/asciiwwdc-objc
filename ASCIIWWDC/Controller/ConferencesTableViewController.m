@@ -176,4 +176,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
     [self.navigationController pushViewController:tracksController animated:YES];
 }
 
+- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
+}
 @end

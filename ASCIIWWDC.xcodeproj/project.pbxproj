@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		76D350B5E55A8C30798C4B93 /* libPods-ASCIIWWDC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D9C82E92361BFD422D2F0CC /* libPods-ASCIIWWDC.a */; };
+		BB3A41972110AB060036343C /* NSURLProtocol+WkWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3A41962110AB060036343C /* NSURLProtocol+WkWebView.m */; };
+		BB3A419A2110AE500036343C /* UINavigationController+AutoRotate.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3A41992110AE500036343C /* UINavigationController+AutoRotate.m */; };
+		BB3A419D2110C3CE0036343C /* UITabBarController+AutoRotate.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3A419C2110C3CE0036343C /* UITabBarController+AutoRotate.m */; };
+		BB3A41A0211217090036343C /* ZWCacheURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3A419F211217090036343C /* ZWCacheURLProtocol.m */; };
 		BB42E10420B075ED00625224 /* DBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BB42E10320B075ED00625224 /* DBManager.m */; };
 		BB6DA71920AC8CA800747820 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6DA71820AC8CA800747820 /* AppDelegate.m */; };
 		BB6DA72120AC8CA900747820 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB6DA72020AC8CA900747820 /* Assets.xcassets */; };
@@ -30,6 +34,14 @@
 		3231660A62584FEE6CCBE6B1 /* Pods-ASCIIWWDC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ASCIIWWDC.release.xcconfig"; path = "Pods/Target Support Files/Pods-ASCIIWWDC/Pods-ASCIIWWDC.release.xcconfig"; sourceTree = "<group>"; };
 		5D9C82E92361BFD422D2F0CC /* libPods-ASCIIWWDC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ASCIIWWDC.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		973B1752149A4DEA5103B234 /* Pods-ASCIIWWDC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ASCIIWWDC.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ASCIIWWDC/Pods-ASCIIWWDC.debug.xcconfig"; sourceTree = "<group>"; };
+		BB3A41952110AB060036343C /* NSURLProtocol+WkWebView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURLProtocol+WkWebView.h"; sourceTree = "<group>"; };
+		BB3A41962110AB060036343C /* NSURLProtocol+WkWebView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSURLProtocol+WkWebView.m"; sourceTree = "<group>"; };
+		BB3A41982110AE500036343C /* UINavigationController+AutoRotate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+AutoRotate.h"; sourceTree = "<group>"; };
+		BB3A41992110AE500036343C /* UINavigationController+AutoRotate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+AutoRotate.m"; sourceTree = "<group>"; };
+		BB3A419B2110C3CE0036343C /* UITabBarController+AutoRotate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITabBarController+AutoRotate.h"; sourceTree = "<group>"; };
+		BB3A419C2110C3CE0036343C /* UITabBarController+AutoRotate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UITabBarController+AutoRotate.m"; sourceTree = "<group>"; };
+		BB3A419E211217090036343C /* ZWCacheURLProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZWCacheURLProtocol.h; sourceTree = "<group>"; };
+		BB3A419F211217090036343C /* ZWCacheURLProtocol.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZWCacheURLProtocol.m; sourceTree = "<group>"; };
 		BB42E10220B075ED00625224 /* DBManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DBManager.h; sourceTree = "<group>"; };
 		BB42E10320B075ED00625224 /* DBManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DBManager.m; sourceTree = "<group>"; };
 		BB6DA71420AC8CA800747820 /* ASCIIWWDC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASCIIWWDC.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -177,6 +189,14 @@
 				BBF85D9620B005A500DAFE1E /* Constants.h */,
 				BB42E10220B075ED00625224 /* DBManager.h */,
 				BB42E10320B075ED00625224 /* DBManager.m */,
+				BB3A41952110AB060036343C /* NSURLProtocol+WkWebView.h */,
+				BB3A41962110AB060036343C /* NSURLProtocol+WkWebView.m */,
+				BB3A41982110AE500036343C /* UINavigationController+AutoRotate.h */,
+				BB3A41992110AE500036343C /* UINavigationController+AutoRotate.m */,
+				BB3A419B2110C3CE0036343C /* UITabBarController+AutoRotate.h */,
+				BB3A419C2110C3CE0036343C /* UITabBarController+AutoRotate.m */,
+				BB3A419E211217090036343C /* ZWCacheURLProtocol.h */,
+				BB3A419F211217090036343C /* ZWCacheURLProtocol.m */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -309,14 +329,18 @@
 			files = (
 				BBAC694820ADB3A6001F5D59 /* ParserManager.m in Sources */,
 				BBF85D9420B0019D00DAFE1E /* MyWebViewController.m in Sources */,
+				BB3A419D2110C3CE0036343C /* UITabBarController+AutoRotate.m in Sources */,
 				BBF85D9120AFD79C00DAFE1E /* TrackHeaderView.m in Sources */,
+				BB3A41972110AB060036343C /* NSURLProtocol+WkWebView.m in Sources */,
 				BBAC693C20ADA97E001F5D59 /* Location.m in Sources */,
 				BBAC693920ADA877001F5D59 /* Conference.m in Sources */,
 				BBAC694520ADB014001F5D59 /* ConferencesTableViewController.m in Sources */,
 				BBF85D8E20AFD4F300DAFE1E /* TracksTableViewController.m in Sources */,
+				BB3A41A0211217090036343C /* ZWCacheURLProtocol.m in Sources */,
 				BB42E10420B075ED00625224 /* DBManager.m in Sources */,
 				BB6DA72720AC8CA900747820 /* main.m in Sources */,
 				BB6DA71920AC8CA800747820 /* AppDelegate.m in Sources */,
+				BB3A419A2110AE500036343C /* UINavigationController+AutoRotate.m in Sources */,
 				BBAC693F20ADACA7001F5D59 /* Track.m in Sources */,
 				BBAAD10E20B6FE7000C82264 /* FavoritesTableViewController.m in Sources */,
 				BBF85D8B20AFB31F00DAFE1E /* ConferenceTableViewCell.m in Sources */,

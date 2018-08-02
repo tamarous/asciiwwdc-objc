@@ -110,4 +110,9 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
     [self.tableView reloadSections:[[NSIndexSet alloc] initWithIndex:trackHeaderView.tag] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
+
+- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
+    return  UIInterfaceOrientationMaskPortrait;
+}
+
 @end
