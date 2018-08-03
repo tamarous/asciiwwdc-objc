@@ -15,7 +15,7 @@
 #import <SVProgressHUD.h>
 #import "ZWCacheURLProtocol.h"
 
-@interface MyWebViewController () <WKUIDelegate>
+@interface MyWebViewController () <WKNavigationDelegate>
 @property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic, assign) BOOL dataSaved;
 @property (nonatomic, strong) UIBarButtonItem *favorButtonItem;
@@ -40,7 +40,13 @@
     self.navigationItem.rightBarButtonItem = self.favorButtonItem;
     
     [self save];
-    [self.webView loadRequest:[NSURLRequest requestWithURL:self.requestURL]];
+    
+    [self loadRequest];
+}
+
+- (void) loadRequest {
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:self.requestURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:6];
+    [self.webView loadRequest:request];
 }
 
 
@@ -111,11 +117,12 @@
         
         WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
         configuration.userContentController = contentController;
+        configuration.selectionGranularity = WKSelectionGranularityDynamic;
         
         UIEdgeInsets safeArea = self.view.safeAreaInsets;
         CGRect safeFrame = CGRectMake(safeArea.left, safeArea.top, self.view.frame.size.width, self.view.frame.size.height);
         _webView = [[WKWebView alloc] initWithFrame:safeFrame configuration:configuration];
-        _webView.UIDelegate = self;
+        _webView.navigationDelegate = self;
         [self.view addSubview:_webView];
     }
     return _webView;
@@ -126,13 +133,26 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - WKUIDelegate
-
 #pragma mark - WKNavigationDelegate
 - (void) webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation {
-    
+    NSLog(@"didCommitNavigation");
 }
 
 - (void) webView:(WKWebView *) webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation {
+    NSLog(@"didStartProvisionalNavigation");
 }
+
+- (void) webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+    NSLog(@"Fail navigation with Error:%@",error.description);
+}
+
+- (void) webView:(WKWebView *) webView didFailLoadWithError:(nonnull NSError *)error {
+    NSLog(@"Fail load with Error:%@",error.description);
+}
+
+- (void) webView:(WKWebView *) webView didFailProvisionalNavigation:(null_unspecified WKNavigation *)navigation withError:(nonnull NSError *)error {
+    [SVProgressHUD showErrorWithStatus:error.localizedDescription];
+    [SVProgressHUD dismissWithDelay:2];
+}
+
 @end

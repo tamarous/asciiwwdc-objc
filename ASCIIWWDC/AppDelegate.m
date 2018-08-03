@@ -19,6 +19,10 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    
+    NSURLCache *urlCache = [[NSURLCache alloc] initWithMemoryCapacity:4 * 1024 * 1024 diskCapacity:100 * 1024 * 1024 diskPath:nil];
+    [NSURLCache setSharedURLCache:urlCache];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
     UITabBarController *tabController = [[UITabBarController alloc] init];

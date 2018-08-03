@@ -84,15 +84,16 @@ static NSString *const checkUpdateInBackgroundKey = @"checkUpdateInBackgroundKey
 
 @implementation ZWCacheURLProtocol
 + (void) startHookNetwork {
-    [NSURLProtocol wk_registerScheme:@"https"];
+    
     [NSURLProtocol wk_registerScheme:@"http"];
+    [NSURLProtocol wk_registerScheme:@"https"];
     [NSURLProtocol registerClass:[ZWCacheURLProtocol class]];
 }
 
 + (void)stopHookNetwork {
-    [NSURLProtocol wk_unregisterScheme:@"https"];
-    [NSURLProtocol wk_unregisterScheme:@"http"];
     
+    [NSURLProtocol wk_unregisterScheme:@"http"];
+    [NSURLProtocol wk_unregisterScheme:@"https"];
     [NSURLProtocol unregisterClass:[ZWCacheURLProtocol class]];
 }
 
@@ -101,7 +102,7 @@ static NSString *const checkUpdateInBackgroundKey = @"checkUpdateInBackgroundKey
     [[ZWURLCacheConfig sharedInstance] setConfig:config];
 }
 
-- (void) setRequestInterval:(NSInteger)requestInterval {
++ (void) setRequestInterval:(NSInteger)requestInterval {
     [[ZWURLCacheConfig sharedInstance] setRequestInterval:requestInterval];
 }
 

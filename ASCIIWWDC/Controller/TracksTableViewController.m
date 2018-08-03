@@ -104,9 +104,6 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
 - (void)trackDidClicked:(TrackHeaderView *)trackHeaderView {
     BOOL reverse = ![_isOpen[trackHeaderView.tag] boolValue];
     _isOpen[trackHeaderView.tag] = [NSNumber numberWithBool:reverse];
-//    [UIView performWithoutAnimation:^{
-//        [self.tableView reloadSections:[[NSIndexSet alloc] initWithIndex:trackHeaderView.tag] withRowAnimation:UITableViewRowAnimationNone];
-//    }];
     [self.tableView reloadSections:[[NSIndexSet alloc] initWithIndex:trackHeaderView.tag] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 

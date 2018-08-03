@@ -72,7 +72,6 @@
 }
 
 - (BOOL) executeStatementString:(NSString *) statementString inTable:(NSString *)tableName {
-    NSAssert([self databaseExists], @"database not existed.");
     if ([self.dataBase open]) {
         if (! [self.dataBase executeStatements:statementString]) {
             NSLog(@"create table:%@ failed.", tableName);
@@ -85,7 +84,6 @@
 }
 
 - (BOOL) executeInsertString:(NSString *) insertString inTable:(NSString *)tableName {
-    NSAssert([self databaseExists], @"database not existed.");
     if ([self.dataBase open]) {
         if ([self.dataBase tableExists: tableName]) {
             if (! [self.dataBase executeUpdate:insertString]) {
@@ -105,7 +103,6 @@
 
 
 - (BOOL) executeUpdateString:(NSString *) updateString inTable:(NSString *)tableName {
-    NSAssert([self databaseExists], @"database not existed.");
     if ([self.dataBase open]) {
         if ([self.dataBase tableExists: tableName]) {
             if (! [self.dataBase executeUpdate:updateString]) {
@@ -125,7 +122,6 @@
 
 
 - (BOOL) saveConference:(Conference *)conference {
-    NSAssert([self databaseExists], @"database not existed");
     if (! [self tableExists:[Conference tableName]]) {
         [self createTable:[Conference tableName] statementString:[Conference stringForCreateTable]];
     }
@@ -141,7 +137,6 @@
 }
 
 - (BOOL)saveConferencesArray:(NSArray *)conferences {
-    NSAssert([self databaseExists], @"database not existed");
     @try{
         if ([self.dataBase open]) {
             if (! [self tableExists:[Conference tableName]]) {
@@ -169,7 +164,6 @@
 }
 
 - (BOOL) saveSession:(Session *)session {
-    NSAssert([self databaseExists], @"database not existed");
     if (! [self tableExists:[Session tableName]]) {
         [self createTable:[Session tableName] statementString:[Session stringForCreateTable]];
     }
@@ -177,7 +171,6 @@
 }
 
 - (BOOL) saveSessionsArray:(NSArray *)sessions {
-    NSAssert([self databaseExists], @"database not existed");
     @try{
         if ([self.dataBase open]) {
             if (! [self tableExists:[Session tableName]]) {
