@@ -12,18 +12,23 @@
 #import <SVProgressHUD.h>
 #import "ConferenceTableViewCell.h"
 #import "TracksTableViewController.h"
+#import "MyWebViewController.h"
 #import "DBManager.h"
 
 static NSString * const kConferenceTableViewCell = @"ConferenceTableViewCell";
 static NSString * const kLoadingTableViewCell = @"LoadingTableViewCell";
+static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
 typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *conference);
 
-@interface ConferencesTableViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface ConferencesTableViewController () <UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating>
 @property (nonatomic, copy) NSArray<Conference *> *conferences;
 @property (nonatomic, assign) BOOL isLoading;
 @property (nonatomic, copy) configureCellBlock cellBlock;
 @property (nonatomic, assign) BOOL dataSaved;
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
+@property (nonatomic, strong) UISearchController *searchController;
+@property (nonatomic, assign) BOOL isFiltering;
+@property (nonatomic, strong) NSArray *filteredSessions;
 - (void) loadContents;
 @end
 
@@ -44,6 +49,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kLoadingTableViewCell];
     [self.tableView registerClass:[ConferenceTableViewCell class] forCellReuseIdentifier:kConferenceTableViewCell];
+    [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kFilteredTableViewCell];
     
     self.cellBlock = ^(ConferenceTableViewCell *cell, Conference *conference) {
         
@@ -58,6 +64,14 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
         [cell.timeLabel sizeToFit];
     };
     
+    
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    self.searchController.searchResultsUpdater = self;
+    self.searchController.hidesNavigationBarDuringPresentation = NO;
+    self.searchController.obscuresBackgroundDuringPresentation = NO;
+    [self.searchController.searchBar sizeToFit];
+    self.navigationItem.searchController = self.searchController;
+    self.definesPresentationContext = true;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self loadContents];
@@ -84,7 +98,6 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
 - (void) loadContents {
     self.isLoading = true;
 
-    
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
     AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
@@ -123,7 +136,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
 #pragma mark - Table view data source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 144.0f;
+    return self.isFiltering?44.0f:144.0f;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -131,11 +144,16 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (_isLoading) {
-        return 1;
+    if (self.isFiltering) {
+        return self.filteredSessions.count;
     } else {
-        return self.conferences.count;
+        if (_isLoading) {
+            return 1;
+        } else {
+            return self.conferences.count;
+        }
     }
+    
 }
 
 - (UIActivityIndicatorView *) indicatorView {
@@ -149,36 +167,92 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (_isLoading) {
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kLoadingTableViewCell forIndexPath:indexPath];
+    if (self.isFiltering) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFilteredTableViewCell forIndexPath:indexPath];
         if (! cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kLoadingTableViewCell];
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kFilteredTableViewCell];
         }
-        [cell addSubview:self.indicatorView];
-        [self.indicatorView startAnimating];
+        Session *session = (Session *)[self.filteredSessions objectAtIndex:indexPath.row];
+        cell.textLabel.text = session.title;
+        cell.textLabel.textAlignment = NSTextAlignmentLeft;
         return cell;
     } else {
-        ConferenceTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kConferenceTableViewCell forIndexPath:indexPath];
-        if (! cell) {
-            cell = [[ConferenceTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kConferenceTableViewCell];
+        if (_isLoading) {
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kLoadingTableViewCell forIndexPath:indexPath];
+            if (! cell) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kLoadingTableViewCell];
+            }
+            [cell addSubview:self.indicatorView];
+            [self.indicatorView startAnimating];
+            return cell;
+        } else {
+            ConferenceTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kConferenceTableViewCell forIndexPath:indexPath];
+            if (! cell) {
+                cell = [[ConferenceTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kConferenceTableViewCell];
+            }
+            Conference *conference = [_conferences objectAtIndex:indexPath.row];
+            _cellBlock(cell, conference);
+            return cell;
         }
-        Conference *conference = [_conferences objectAtIndex:indexPath.row];
-        _cellBlock(cell, conference);
-        return cell;
     }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    TracksTableViewController *tracksController = [[TracksTableViewController alloc] init];
-    tracksController.hidesBottomBarWhenPushed = YES;
-    Conference *conference = [self.conferences objectAtIndex:indexPath.row];
-    tracksController.tracks = conference.tracks;
-    tracksController.trackTitle = conference.name;
-    [self.navigationController pushViewController:tracksController animated:YES];
+    if (self.isFiltering) {
+        Session *session = [self.filteredSessions objectAtIndex:indexPath.row];
+        NSURL *requestURL = [NSURL URLWithString:session.urlString relativeToURL:[NSURL URLWithString:kASCIIWWDCHomepageURLString]];
+        
+        MyWebViewController *webViewController = [[MyWebViewController alloc] init];
+        webViewController.requestURL = requestURL;
+        webViewController.session = session;
+        webViewController.hidesBottomBarWhenPushed = YES;
+        [self.navigationController pushViewController:webViewController animated:YES];
+    } else {
+        TracksTableViewController *tracksController = [[TracksTableViewController alloc] init];
+        tracksController.hidesBottomBarWhenPushed = YES;
+        Conference *conference = [self.conferences objectAtIndex:indexPath.row];
+        tracksController.tracks = conference.tracks;
+        tracksController.trackTitle = conference.name;
+        [self.navigationController pushViewController:tracksController animated:YES];
+    }
+    
+    
 }
 
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskPortrait;
+}
+
+#pragma mark - UISearchResultsUpdating
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    [self filterSessionsForSearchText:searchController.searchBar.text];
+}
+
+- (void) filterSessionsForSearchText:(NSString *) query {
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    [self.conferences enumerateObjectsUsingBlock:^(Conference * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        Conference *conference = (Conference *)obj;
+        NSArray *tracks = conference.tracks;
+        for (int i = 0; i < tracks.count; i++) {
+            Track *track = [tracks objectAtIndex:i];
+            for(int j = 0; j < track.sessions.count; j++) {
+                Session *session = [track.sessions objectAtIndex:j];
+                if ([session.title.lowercaseString containsString:query.lowercaseString]) {
+                    [result addObject:session];
+                }
+            }
+        }
+    }];
+    self.filteredSessions = [result copy];
+    [self.tableView reloadData];
+}
+
+- (BOOL) isFiltering {
+    return self.searchController.isActive && ![self searchBarIsEmpty];
+}
+
+- (BOOL) searchBarIsEmpty {
+    return self.searchController.searchBar == nil || self.searchController.searchBar.text.length == 0;
 }
 @end
