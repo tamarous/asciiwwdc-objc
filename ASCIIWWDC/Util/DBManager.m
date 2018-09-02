@@ -50,6 +50,10 @@
     return manager;
 }
 
+- (void) dealloc {
+    [self.dataBase close];
+}
+
 - (void) createDatabase {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     self.dataBasePath = [paths[0] stringByAppendingPathComponent:@"sessions.db"];
@@ -66,7 +70,7 @@
                     return NO;
                 }
             }
-            [self.dataBase close];
+            //[self.dataBase close];
             return YES;
         }
     }
@@ -79,7 +83,7 @@
             NSLog(@"create table:%@ failed.", tableName);
             return NO;
         }
-        [self.dataBase close];
+        //[self.dataBase close];
         return YES;
     }
     return NO;
@@ -99,7 +103,7 @@
             NSLog(@"Table not existed.");
         }
     }
-    [self.dataBase close];
+    //[self.dataBase close];
     return YES;
 }
 
@@ -118,7 +122,7 @@
             NSLog(@"Table not existed.");
         }
     }
-    [self.dataBase close];
+    //[self.dataBase close];
     return YES;
 }
 
@@ -149,22 +153,28 @@
                 if (! res) {
                     NSLog(@"failed insert %@", conference.description);
                 }
+                
+                res = [self saveTracksArray:conference.tracks];
+                if (! res) {
+                    NSLog(@"Failed insert %@ tracks", conferences.description);
+                }
+                
                 if ([self.dataBase hadError]) {
                     NSLog(@"Error: %@", self.dataBase.lastError.domain);
                 }
             }
             [self.dataBase commit];
-            [self.dataBase close];
+            //[self.dataBase close];
             return YES;
         }
     } @catch(NSException *e) {
         [self.dataBase rollback];
+        return NO;
     }
-    return NO;
+    
 }
 
 - (NSArray *) loadConferencesArrayFromDatabaseWithQueryString:(NSString *)queryString {
-    
     NSMutableArray *conferences = [NSMutableArray array];
     if ([self.dataBase open]) {
         if (! [self.dataBase tableExists:[Conference tableName]]) {
@@ -182,9 +192,10 @@
             conference.logoUrlString = [set stringForColumn:@"LOGO_URL_STRING"];
             conference.location = [Location locationFromDescriptionString:[set stringForColumn:@"LOCATION"]];
             conference.time = [set stringForColumn:@"TIME"];
+            conference.tracks = [self loadTracksArrayFromDatabaseWithQueryString:[NSString stringWithFormat:@"SELECT * FROM %@ WHERE CONFERENCE_NAME = \"%@\";", [Track tableName], conference.name]];
             [conferences addObject:conference];
         }
-        [self.dataBase close];
+        //[self.dataBase close];
     }
     return [conferences copy];
 }
@@ -202,30 +213,51 @@
 }
 
 - (BOOL) saveTracksArray:(NSArray *)tracks {
-    @try{
-        if ([self.dataBase open]) {
-            if (! [self tableExists:[Track tableName]]) {
-                [self createTable:[Track tableName] statementString:[Track stringForCreateTable]];
+    if ([self.dataBase open]) {
+        if (! [self tableExists:[Track tableName]]) {
+            [self createTable:[Track tableName] statementString:[Track stringForCreateTable]];
+        }
+        if (! self.dataBase.isInTransaction) {
+            @try{
+                [self.dataBase beginTransaction];
+                for (Track *track in tracks) {
+                    NSString *string = [Track stringForInsertTrack:track];
+                    BOOL res = [self.dataBase executeUpdate:string];
+                    if (! res) {
+                        NSLog(@"Failed save tracks");
+                    }
+                    res = [self saveSessionsArray:track.sessions];
+                    if (! res) {
+                        NSLog(@"Failed save sessions, track name %@", track.trackName);
+                    }
+                }
+                [self.dataBase commit];
+                //[self.dataBase close];
+            }@catch(NSException *e) {
+                [self.dataBase rollback];
+                return NO;
             }
-            [self.dataBase beginTransaction];
+        } else {
             for (Track *track in tracks) {
                 NSString *string = [Track stringForInsertTrack:track];
-                [self.dataBase executeUpdate:string];
+                BOOL res = [self.dataBase executeUpdate:string];
+                if (! res) {
+                    NSLog(@"Failed save tracks");
+                }
+                res = [self saveSessionsArray:track.sessions];
+                if (! res) {
+                    NSLog(@"Failed save sessions, track name %@", track.trackName);
+                }
             }
-            [self.dataBase commit];
-            [self.dataBase close];
-            return YES;
         }
-    } @catch(NSException *e) {
-        [self.dataBase rollback];
+        return YES;
     }
-    return NO;
 }
 
 - (NSArray *)loadTracksArrayFromDatabaseWithQueryString:(NSString *)queryString {
     NSMutableArray *tracks = [NSMutableArray array];
     if ([self.dataBase open]) {
-        if (! [self.dataBase tableExists:[Session tableName]]) {
+        if (! [self.dataBase tableExists:[Track tableName]]) {
             return nil;
         }
         if (queryString == nil) {
@@ -237,9 +269,10 @@
             Track *track = [[Track alloc] init];
             track.trackName = [set stringForColumn:@"TRACK_NAME"];
             track.conferenceName = [set stringForColumn:@"CONFERENCE_NAME"];
+            track.sessions = [self loadSessionsArrayFromDatabaseWithQueryString:[NSString stringWithFormat:@"SELECT * FROM %@ WHERE TRACK_NAME = \"%@\";",[Session tableName], track.trackName]];
             [tracks addObject:track];
         }
-        [self.dataBase close];
+        //[self.dataBase close];
     }
     return [tracks copy];
 }
@@ -247,7 +280,7 @@
 
 #pragma mark - Session related
 
-- (BOOL)updateSession:(Session *)session {
+- (BOOL) updateSession:(Session *)session {
     return [self executeUpdateString:[Session stringForUpdateSession:session] inTable:[Session tableName]];
 }
 
@@ -259,24 +292,33 @@
 }
 
 - (BOOL) saveSessionsArray:(NSArray *)sessions {
-    @try{
-        if ([self.dataBase open]) {
-            if (! [self tableExists:[Session tableName]]) {
-                [self createTable:[Session tableName] statementString:[Session stringForCreateTable]];
+    if ([self.dataBase open]) {
+        if (! [self tableExists:[Session tableName]]) {
+            [self createTable:[Session tableName] statementString:[Session stringForCreateTable]];
+        }
+        if (! self.dataBase.isInTransaction) {
+            @try{
+                [self.dataBase beginTransaction];
+                for(Session *session in sessions) {
+                    NSString *insertStr = [Session stringForInsertSession:session];
+                    [self.dataBase executeUpdate:insertStr];
+                }
+                [self.dataBase commit];
+                //[self.dataBase close];
+                return YES;
+            } @catch(NSException *e) {
+                [self.dataBase rollback];
+                return NO;
             }
-            [self.dataBase beginTransaction];
+        } else {
             for(Session *session in sessions) {
                 NSString *insertStr = [Session stringForInsertSession:session];
                 [self.dataBase executeUpdate:insertStr];
             }
-            [self.dataBase commit];
-            [self.dataBase close];
+            //[self.dataBase close];
             return YES;
         }
-    } @catch(NSException *e) {
-        [self.dataBase rollback];
     }
-    return NO;
 }
 
 - (NSArray *) loadSessionsArrayFromDatabaseWithQueryString:(NSString *)queryString {
@@ -296,9 +338,10 @@
             session.title = [set stringForColumn:@"TITLE"];
             session.sessionID = [set stringForColumn:@"SESSION_ID"];
             session.isFavored = [set intForColumn:@"FAVORED"];
+            session.trackName = [set stringForColumn:@"TRACK_NAME"];
             [sessions addObject:session];
         }
-        [self.dataBase close];
+        //[self.dataBase close];
     }
     return [sessions copy];
 }

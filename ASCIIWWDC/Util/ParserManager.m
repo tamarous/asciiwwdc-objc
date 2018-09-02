@@ -54,6 +54,10 @@
         Track *track = [[Track alloc] init];
         track.trackName = [trackNode querySelector:@"h1"].textContent;
         track.sessions = [self createSessionsArrayFromTrackNode:trackNode];
+        [track.sessions enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+            Session *session = (Session *)obj;
+            session.trackName = track.trackName;
+        }];
         [tracks addObject:track];
     }];
     
@@ -93,6 +97,9 @@
     }];
     
     conference.tracks = [self createTracksArrayFromConferenceNode:conferenceNode];
+    [conference.tracks enumerateObjectsUsingBlock:^(Track * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        obj.conferenceName = conference.name;
+    }];
     return conference;
 }
 

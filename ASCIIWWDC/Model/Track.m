@@ -17,12 +17,12 @@ static NSString * TRACK_TABLE_NAME = @"TRACKS";
 }
 
 + (NSString *) stringForCreateTable {
-    NSString *str = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ (TRACK_NAME TEXT PRIMARY KEY NOT NULL, CONFERENCE_NAME TEXT NOT NULL);",TRACK_TABLE_NAME];
+    NSString *str = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ (TRACK_ID INTEGER PRIMARY KEY,TRACK_NAME TEXT, CONFERENCE_NAME TEXT NOT NULL);",TRACK_TABLE_NAME];
     return str;
 }
 
 + (NSString *) stringForInsertTrack:(Track *)track {
-    NSString *str = [NSString stringWithFormat:@"INSERT OR IGNORE INTO %@ VALUES(\"%@\",\"%@\");",TRACK_TABLE_NAME,track.trackName,track.conferenceName];
+    NSString *str = [NSString stringWithFormat:@"INSERT OR IGNORE INTO %@ VALUES(NULL,\"%@\",\"%@\");",TRACK_TABLE_NAME,track.trackName,track.conferenceName];
     return str;
 }
 

@@ -12,6 +12,7 @@
 @property (nonatomic, copy) NSString *sessionID;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *urlString;
+@property (nonatomic, copy) NSString *trackName;
 @property (nonatomic, assign) BOOL isFavored;
 
 + (NSString *) tableName;

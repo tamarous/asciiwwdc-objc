@@ -97,9 +97,9 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
 
 - (void) loadContents {
     self.isLoading = true;
-
     self.conferences = [[DBManager sharedManager] loadConferencesArrayFromDatabaseWithQueryString:nil];
     if (self.conferences.count == 0) {
+        NSLog(@"Loading contents from network");
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
         AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
         AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
@@ -116,6 +116,9 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
                 NSLog(@"error: %@", error.domain.description);
             } else {
                 self.conferences = [[ParserManager sharedManager]  createConferencesArrayFromResponseObject:responseObject];
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [[DBManager sharedManager] saveConferencesArray:self.conferences];
+                });
                 self.isLoading = NO;
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.indicatorView stopAnimating];
@@ -126,6 +129,7 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
         }];
         [dataTask resume];
     } else {
+        NSLog(@"Loading contents from local disk.");
         self.isLoading = NO;
     }
 }
