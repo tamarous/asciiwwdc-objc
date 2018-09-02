@@ -15,6 +15,8 @@
 @end
 
 @implementation DBManager
+#pragma mark - DBManager
+
 - (instancetype) init {
     self = [super init];
     if (self) {
@@ -121,6 +123,8 @@
 }
 
 
+#pragma mark - Conference related
+
 - (BOOL) saveConference:(Conference *)conference {
     if (! [self tableExists:[Conference tableName]]) {
         [self createTable:[Conference tableName] statementString:[Conference stringForCreateTable]];
@@ -132,11 +136,7 @@
     return [self executeUpdateString:[Conference stringForUpdateConference:conference] inTable:[Conference tableName]];
 }
 
-- (BOOL)updateSession:(Session *)session {
-    return [self executeUpdateString:[Session stringForUpdateSession:session] inTable:[Session tableName]];
-}
-
-- (BOOL)saveConferencesArray:(NSArray *)conferences {
+- (BOOL) saveConferencesArray:(NSArray *)conferences {
     @try{
         if ([self.dataBase open]) {
             if (! [self tableExists:[Conference tableName]]) {
@@ -161,6 +161,94 @@
         [self.dataBase rollback];
     }
     return NO;
+}
+
+- (NSArray *) loadConferencesArrayFromDatabaseWithQueryString:(NSString *)queryString {
+    
+    NSMutableArray *conferences = [NSMutableArray array];
+    if ([self.dataBase open]) {
+        if (! [self.dataBase tableExists:[Conference tableName]]) {
+            return nil;
+        }
+        if (queryString == nil) {
+            queryString = [NSString stringWithFormat:@"SELECT * FROM %@", [Conference tableName]];
+        }
+        
+        FMResultSet *set = [self.dataBase executeQuery:queryString];
+        while ([set next]) {
+            Conference *conference = [[Conference alloc] init];
+            conference.name = [set stringForColumn:@"NAME"];
+            conference.shortDescription = [set stringForColumn:@"SHORT_DESCRIPTION"];
+            conference.logoUrlString = [set stringForColumn:@"LOGO_URL_STRING"];
+            conference.location = [Location locationFromDescriptionString:[set stringForColumn:@"LOCATION"]];
+            conference.time = [set stringForColumn:@"TIME"];
+            [conferences addObject:conference];
+        }
+        [self.dataBase close];
+    }
+    return [conferences copy];
+}
+
+#pragma mark - Track related
+- (BOOL) saveTrack:(Track *)track {
+    if (! [self tableExists:[Track tableName]]) {
+        [self createTable:[Track tableName] statementString:[Track stringForCreateTable]];
+    }
+    return [self executeInsertString:[Track stringForInsertTrack:track] inTable:[Track tableName]];
+}
+
+- (BOOL) updateTrack:(Track *)track {
+    return [self executeUpdateString:[Track stringForUpdateTrack:track] inTable:[Track tableName]];
+}
+
+- (BOOL) saveTracksArray:(NSArray *)tracks {
+    @try{
+        if ([self.dataBase open]) {
+            if (! [self tableExists:[Track tableName]]) {
+                [self createTable:[Track tableName] statementString:[Track stringForCreateTable]];
+            }
+            [self.dataBase beginTransaction];
+            for (Track *track in tracks) {
+                NSString *string = [Track stringForInsertTrack:track];
+                [self.dataBase executeUpdate:string];
+            }
+            [self.dataBase commit];
+            [self.dataBase close];
+            return YES;
+        }
+    } @catch(NSException *e) {
+        [self.dataBase rollback];
+    }
+    return NO;
+}
+
+- (NSArray *)loadTracksArrayFromDatabaseWithQueryString:(NSString *)queryString {
+    NSMutableArray *tracks = [NSMutableArray array];
+    if ([self.dataBase open]) {
+        if (! [self.dataBase tableExists:[Session tableName]]) {
+            return nil;
+        }
+        if (queryString == nil) {
+            queryString = [NSString stringWithFormat:@"SELECT * FROM %@;", [Track tableName]];
+        }
+        
+        FMResultSet *set = [self.dataBase executeQuery:queryString];
+        while([set next]) {
+            Track *track = [[Track alloc] init];
+            track.trackName = [set stringForColumn:@"TRACK_NAME"];
+            track.conferenceName = [set stringForColumn:@"CONFERENCE_NAME"];
+            [tracks addObject:track];
+        }
+        [self.dataBase close];
+    }
+    return [tracks copy];
+}
+
+
+#pragma mark - Session related
+
+- (BOOL)updateSession:(Session *)session {
+    return [self executeUpdateString:[Session stringForUpdateSession:session] inTable:[Session tableName]];
 }
 
 - (BOOL) saveSession:(Session *)session {
@@ -191,7 +279,7 @@
     return NO;
 }
 
-- (NSArray *)loadSessionsArrayFromDatabaseWithQueryString:(NSString *)queryString {
+- (NSArray *) loadSessionsArrayFromDatabaseWithQueryString:(NSString *)queryString {
     NSMutableArray *sessions = [NSMutableArray array];
     if ([self.dataBase open]) {
         if (! [self.dataBase tableExists:[Session tableName]]) {
@@ -213,32 +301,6 @@
         [self.dataBase close];
     }
     return [sessions copy];
-}
-
-- (NSArray *) loadConferencesArrayFromDatabaseWithQueryString:(NSString *)queryString {
-    
-    NSMutableArray *conferences = [NSMutableArray array];
-    if ([self.dataBase open]) {
-        if (! [self.dataBase tableExists:[Conference tableName]]) {
-            return nil;
-        }
-        if (queryString == nil) {
-            queryString = [NSString stringWithFormat:@"SELECT * FROM %@", [Conference tableName]];
-        }
-        
-        FMResultSet *set = [self.dataBase executeQuery:queryString];
-        while ([set next]) {
-            Conference *conference = [[Conference alloc] init];
-            conference.name = [set stringForColumn:@"TEXT"];
-            conference.shortDescription = [set stringForColumn:@"SHORT_DESCRIPTION"];
-            conference.logoUrlString = [set stringForColumn:@"LOGO_URL_STRING"];
-            conference.location = [Location locationFromDescriptionString:[set stringForColumn:@"LOCATION"]];
-            conference.time = [set stringForColumn:@"TIME"];
-            [conferences addObject:conference];
-        }
-        [self.dataBase close];
-    }
-    return [conferences copy];
 }
 
 - (BOOL) isFavoredForSession:(Session *)session {

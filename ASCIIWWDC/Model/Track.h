@@ -10,6 +10,13 @@
 
 @interface Track : NSObject
 @property (nonatomic, copy) NSString *trackName;
+@property (nonatomic, copy) NSString *conferenceName;
 @property (nonatomic, copy) NSArray *sessions;
+
++ (NSString *) tableName;
++ (NSString *) stringForCreateTable;
++ (NSString *) stringForInsertTrack:(Track *) track;
++ (NSString *) stringForUpdateTrack:(Track *) track;
++ (NSString *) stringForInsertOrReplaceTrack:(Track *) track;
 
 @end

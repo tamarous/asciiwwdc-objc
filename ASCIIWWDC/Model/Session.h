@@ -18,5 +18,5 @@
 + (NSString *) stringForCreateTable;
 + (NSString *) stringForInsertSession:(Session *) session;
 + (NSString *) stringForUpdateSession:(Session *) session;
-+ (NSString *) stringForInsertOrReplace:(Session *) session;
++ (NSString *) stringForInsertOrReplaceSession:(Session *) session;
 @end

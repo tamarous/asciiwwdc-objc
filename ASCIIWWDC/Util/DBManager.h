@@ -10,6 +10,7 @@
 #import <FMDB.h>
 #import "Conference.h"
 #import "Session.h"
+#import "Track.h"
 @interface DBManager : NSObject
 
 + (instancetype) sharedManager;
@@ -22,12 +23,6 @@
 
 - (BOOL) executeUpdateString:(NSString *)updateString inTable:(NSString *)tableName;
 
-- (BOOL) saveSession:(Session *) session;
-
-- (BOOL) updateSession:(Session *) session;
-
-- (BOOL) saveSessionsArray:(NSArray *) sessions;
-
 - (BOOL) saveConference:(Conference *) conference;
 
 - (BOOL) updateConference:(Conference *) conference;
@@ -35,6 +30,20 @@
 - (BOOL) saveConferencesArray:(NSArray *) conferences;
 
 - (NSArray *) loadConferencesArrayFromDatabaseWithQueryString:(NSString *) queryString;
+
+- (BOOL) saveTrack:(Track *) track;
+
+- (BOOL) updateTrack:(Track *) track;
+
+- (BOOL) saveTracksArray:(NSArray *) tracks;
+
+- (NSArray *) loadTracksArrayFromDatabaseWithQueryString:(NSString *) queryString;
+
+- (BOOL) saveSession:(Session *) session;
+
+- (BOOL) updateSession:(Session *) session;
+
+- (BOOL) saveSessionsArray:(NSArray *) sessions;
 
 - (NSArray *) loadSessionsArrayFromDatabaseWithQueryString:(NSString *) queryString;
 

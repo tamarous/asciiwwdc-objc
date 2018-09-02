@@ -11,7 +11,7 @@ static NSString * SESSION_TABLE_NAME = @"SESSIONS";
 @implementation Session
 
 + (NSString *)tableName {
-    return @"SESSIONS";
+    return SESSION_TABLE_NAME;
 }
 
 + (NSString *)stringForCreateTable {
@@ -29,7 +29,7 @@ static NSString * SESSION_TABLE_NAME = @"SESSIONS";
     return str;
 }
 
-+ (NSString *)stringForInsertOrReplace:(Session *)session {
++ (NSString *)stringForInsertOrReplaceSession:(Session *)session {
     NSString *str = [NSString stringWithFormat:@"INSERT OR REPLACE INTO %@ (URL_STRING, TITLE, SESSION_ID, FAVORED) VALUES(\"%@\", \"%@\", \"%@\",%d);",SESSION_TABLE_NAME,session.urlString,session.title,session.sessionID,session.isFavored];
     return str;
 }

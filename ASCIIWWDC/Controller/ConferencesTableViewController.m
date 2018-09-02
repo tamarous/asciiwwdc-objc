@@ -98,31 +98,36 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
 - (void) loadContents {
     self.isLoading = true;
 
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
-    AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
-    [requestSerializer setValue:@"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8" forHTTPHeaderField:@"Accept"];
-    
-    AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
-    manager.requestSerializer = requestSerializer;
-    manager.responseSerializer = responseSerializer;
-    
-    NSURL *URL = [NSURL URLWithString:kASCIIWWDCHomepageURLString];
-    NSURLRequest *request = [NSURLRequest requestWithURL:URL];
-    NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
-        if (error) {
-            NSLog(@"error: %@", error.domain.description);
-        } else {
-            self.conferences = [[ParserManager sharedManager]  createConferencesArrayFromResponseObject:responseObject];
-            self.isLoading = false;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.indicatorView stopAnimating];
-                [self.indicatorView removeFromSuperview];
-                [self.tableView reloadData];
-            });
-        }
-    }];
-    [dataTask resume];
+    self.conferences = [[DBManager sharedManager] loadConferencesArrayFromDatabaseWithQueryString:nil];
+    if (self.conferences.count == 0) {
+        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+        AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
+        AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
+        [requestSerializer setValue:@"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8" forHTTPHeaderField:@"Accept"];
+        
+        AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
+        manager.requestSerializer = requestSerializer;
+        manager.responseSerializer = responseSerializer;
+        
+        NSURL *URL = [NSURL URLWithString:kASCIIWWDCHomepageURLString];
+        NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+        NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
+            if (error) {
+                NSLog(@"error: %@", error.domain.description);
+            } else {
+                self.conferences = [[ParserManager sharedManager]  createConferencesArrayFromResponseObject:responseObject];
+                self.isLoading = NO;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.indicatorView stopAnimating];
+                    [self.indicatorView removeFromSuperview];
+                    [self.tableView reloadData];
+                });
+            }
+        }];
+        [dataTask resume];
+    } else {
+        self.isLoading = NO;
+    }
 }
 
 - (void) saveContents {
