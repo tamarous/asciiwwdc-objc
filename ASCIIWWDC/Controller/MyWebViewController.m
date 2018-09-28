@@ -17,6 +17,7 @@
 
 @interface MyWebViewController () <WKNavigationDelegate>
 @property (nonatomic, strong) WKWebView *webView;
+@property (nonatomic, strong) UIProgressView *progressView;
 @property (nonatomic, assign) BOOL dataSaved;
 @property (nonatomic, strong) UIBarButtonItem *favorButtonItem;
 @end
@@ -27,6 +28,8 @@
     [super viewDidLoad];
     
     [ZWCacheURLProtocol startHookNetwork];
+    
+    
     
     
     self.navigationItem.title = self.session.title;
@@ -49,13 +52,44 @@
     [self.webView loadRequest:request];
 }
 
+- (UIProgressView *) progressView {
+    if (_progressView == nil) {
+        UIEdgeInsets safeArea = self.view.safeAreaInsets;
+        CGRect safeFrame = CGRectMake(safeArea.left, safeArea.top, self.view.frame.size.width, 1);
+        _progressView = [[UIProgressView alloc] initWithFrame:safeFrame];
+        _progressView.tintColor = [UIColor blueColor];
+        _progressView.trackTintColor = [UIColor whiteColor];
+        [self.view addSubview:_progressView];
+    }
+    return _progressView;
+}
+
 
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskPortrait;
 }
 
 - (void) dealloc {
+    [_webView removeObserver:self forKeyPath:@"estimatedProgress"];
+    
     [ZWCacheURLProtocol stopHookNetwork];
+}
+
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    if (object == _webView && [keyPath isEqualToString:@"estimatedProgress"]) {
+        CGFloat newProgress = [[change objectForKey:NSKeyValueChangeNewKey] floatValue];
+        self.progressView.alpha = 1.0f;
+        [self.progressView setProgress:newProgress animated:YES];
+        if (newProgress >= 1.0f) {
+            [UIView animateWithDuration:0.3f delay:0.3f options:UIViewAnimationOptionCurveEaseInOut animations:^{
+                self.progressView.alpha = 0.0f;
+            } completion:^(BOOL finished) {
+                [self.progressView setProgress:0.0f animated:NO];
+            }];
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 - (void) favorite {
@@ -123,6 +157,9 @@
         CGRect safeFrame = CGRectMake(safeArea.left, safeArea.top, self.view.frame.size.width, self.view.frame.size.height);
         _webView = [[WKWebView alloc] initWithFrame:safeFrame configuration:configuration];
         _webView.navigationDelegate = self;
+        
+        [_webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
+        
         [self.view addSubview:_webView];
     }
     return _webView;
