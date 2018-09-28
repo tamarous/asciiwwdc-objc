@@ -131,6 +131,9 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
     } else {
         NSLog(@"Loading contents from local disk.");
         self.isLoading = NO;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
     }
 }
 
