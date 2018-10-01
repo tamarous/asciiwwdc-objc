@@ -45,7 +45,10 @@ typedef void(^configureCellBlock)(ConferenceTableViewCell *cell, Conference *con
     self.tableView.frame = CGRectMake(safeArea.left, safeArea.top, self.tableView.bounds.size.width, self.tableView.bounds.size.height);
     
     self.tableView.tableFooterView = [UIView new];
-    self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    
+    self.tableView.separatorColor = [UIColor colorWithWhite:0.95 alpha:1.0];
+    
+    self.tableView.backgroundColor = [UIColor colorWithWhite:0.92 alpha:1.0];
     
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kLoadingTableViewCell];
     [self.tableView registerClass:[ConferenceTableViewCell class] forCellReuseIdentifier:kConferenceTableViewCell];

@@ -9,6 +9,10 @@
 #import "ConferenceTableViewCell.h"
 #import <Masonry.h>
 
+@interface ConferenceTableViewCell()
+@property (nonatomic, strong) UIView *containerView;
+@end
+
 @implementation ConferenceTableViewCell
 
 - (instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -23,55 +27,82 @@
 }
 
 - (void) configureViews {
+    self.containerView = [[UIView alloc] init];
+    [self.contentView addSubview:self.containerView];
+    
+    
     self.logoImageView = [[UIImageView alloc] init];
     self.logoImageView.contentMode = UIViewContentModeScaleAspectFit;
-    [self.contentView addSubview:self.logoImageView];
+    [self.containerView addSubview:self.logoImageView];
     
     self.nameLabel = [[UILabel alloc] init];
     self.nameLabel.textAlignment = NSTextAlignmentLeft;
     self.nameLabel.font = [UIFont systemFontOfSize:20.0];
-    [self.contentView addSubview:self.nameLabel];
+    [self.containerView addSubview:self.nameLabel];
     
     self.shortDescriptionLabel = [[UILabel alloc] init];
     self.shortDescriptionLabel.textAlignment = NSTextAlignmentLeft;
     self.shortDescriptionLabel.font = [UIFont systemFontOfSize:18.0];
-    [self.contentView addSubview:self.shortDescriptionLabel];
+    [self.containerView addSubview:self.shortDescriptionLabel];
     
     self.timeLabel = [[UILabel alloc] init];
     self.timeLabel.textAlignment = NSTextAlignmentLeft;
     self.timeLabel.font = [UIFont systemFontOfSize:16.0];
-    [self.contentView addSubview:self.timeLabel];
+    [self.containerView addSubview:self.timeLabel];
+    
+    
+    self.containerView.backgroundColor = [UIColor whiteColor];
+    
+    self.containerView.layer.cornerRadius = 5.0;
+    self.containerView.layer.shadowOpacity = 0.5;
+    self.containerView.layer.shadowColor =  [[UIColor blackColor] CGColor];
+    self.containerView.layer.shadowRadius = 5.0;
+    self.containerView.layer.shadowOffset = CGSizeMake(5, 5);
+    self.containerView.layer.masksToBounds = true;
+    
+    
+    
 }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
+    
+    [self.containerView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.contentView.mas_top).with.offset(5);
+        make.bottom.equalTo(self.contentView.mas_bottom).with.offset(-5);
+        make.left.equalTo(self.contentView.mas_left).with.offset(16);
+        make.right.equalTo(self.contentView.mas_right).with.offset(-16);
+    }];
+    
     [self.logoImageView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.contentView.mas_top).with.offset(28);
-        make.left.equalTo(self.contentView.mas_left).with.offset(8);
-        make.bottom.equalTo(self.contentView.mas_bottom).with.offset(-10);
+        make.top.equalTo(self.containerView.mas_top).with.offset(28);
+        make.left.equalTo(self.containerView.mas_left).with.offset(8);
+        make.bottom.equalTo(self.containerView.mas_bottom).with.offset(-10);
         make.width.equalTo(self.logoImageView.mas_height);
     }];
     
     [self.nameLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.contentView.mas_top).with.offset(28);
+        make.top.equalTo(self.containerView.mas_top).with.offset(28);
         make.left.equalTo(self.logoImageView.mas_right).with.offset(8);
-        make.right.equalTo(self.contentView.mas_right).with.offset(-8);
+        make.right.equalTo(self.containerView.mas_right).with.offset(-8);
         make.height.equalTo(@24);
     }];
     
     [self.shortDescriptionLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.nameLabel.mas_bottom).with.offset(12);
         make.left.equalTo(self.logoImageView.mas_right).with.offset(8);
-        make.right.equalTo(self.contentView.mas_right).with.offset(-8);
+        make.right.equalTo(self.containerView.mas_right).with.offset(-8);
         make.height.equalTo(@20);
     }];
     
     [self.timeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.shortDescriptionLabel.mas_bottom).with.offset(12);
         make.left.equalTo(self.logoImageView.mas_right).with.offset(8);
-        make.right.equalTo(self.contentView.mas_right).with.offset(-8);
+        make.right.equalTo(self.containerView.mas_right).with.offset(-8);
         make.height.equalTo(@20);
     }];
+    
+    self.containerView.layer.shadowPath = ([[UIBezierPath bezierPathWithRoundedRect:self.containerView.bounds cornerRadius:5.0] CGPath]);
     
 }
 
