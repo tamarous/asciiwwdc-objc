@@ -1,0 +1,6 @@
+module Pods_ASCIIWWDC {
+  umbrella header "Pods-ASCIIWWDC-umbrella.h"
+
+  export *
+  module * { export * }
+}
