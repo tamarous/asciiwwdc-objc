@@ -9,9 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "Conference.h"
 @interface ConferenceTableViewCell : UITableViewCell
-@property (nonatomic, strong) UIImageView *logoImageView;
-@property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) UILabel *shortDescriptionLabel;
-@property (nonatomic, strong) UILabel *timeLabel;
-//@property (nonatomic, strong) UILabel *LocationLabel;
+
+- (void)configureWithConference:(Conference *)conference;
 @end

@@ -10,6 +10,8 @@
 #import "TrackHeaderView.h"
 #import "Constants.h"
 #import "MyWebViewController.h"
+#import <ReactiveObjC/ReactiveObjC.h>
+
 static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
 #define TRACK_HEADER_HEIGHT 48
 
@@ -39,10 +41,9 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
 
 - (void) setTracks:(NSArray *)tracks {
     _tracks = [tracks copy];
-    _isOpen = [NSMutableArray arrayWithCapacity:tracks.count];
-    for(int i = 0; i < tracks.count; i++) {
-        _isOpen[i] = @NO;
-    }
+    _isOpen = [[[_tracks.rac_sequence map:^id _Nullable(id  _Nullable value) {
+        return @NO;
+    }] array] mutableCopy];
 }
 
 #pragma mark - Table view data source
@@ -55,9 +56,8 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
     if ([_isOpen[section] boolValue]) {
         Track *track = [self.tracks objectAtIndex:section];
         return track.sessions.count;
-    } else {
-        return 0;
     }
+    return 0;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -109,7 +109,7 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
 
 
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {
-    return  UIInterfaceOrientationMaskPortrait;
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 @end

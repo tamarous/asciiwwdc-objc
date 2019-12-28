@@ -8,9 +8,14 @@
 
 #import "ConferenceTableViewCell.h"
 #import <Masonry.h>
-
+#import <SDWebImage/UIImageView+WebCache.h>
+#import "Constants.h"
 @interface ConferenceTableViewCell()
 @property (nonatomic, strong) UIView *containerView;
+@property (nonatomic, strong) UIImageView *logoImageView;
+@property (nonatomic, strong) UILabel *nameLabel;
+@property (nonatomic, strong) UILabel *shortDescriptionLabel;
+@property (nonatomic, strong) UILabel *timeLabel;
 @end
 
 @implementation ConferenceTableViewCell
@@ -59,9 +64,6 @@
     self.containerView.layer.shadowRadius = 5.0;
     self.containerView.layer.shadowOffset = CGSizeMake(5, 5);
     self.containerView.layer.masksToBounds = true;
-    
-    
-    
 }
 
 - (void)layoutSubviews {
@@ -103,7 +105,17 @@
     }];
     
     self.containerView.layer.shadowPath = ([[UIBezierPath bezierPathWithRoundedRect:self.containerView.bounds cornerRadius:5.0] CGPath]);
-    
+}
+
+- (void)configureWithConference:(Conference *)conference {
+    [self.logoImageView sd_setImageWithURL:[NSURL URLWithString:conference.logoUrlString relativeToURL:[NSURL URLWithString:kASCIIWWDCHomepageURLString]]];
+    self.nameLabel.text = conference.name;
+    self.shortDescriptionLabel.text = conference.shortDescription;
+    self.timeLabel.text = [[conference.time componentsSeparatedByString:@"T"] firstObject];
+
+    [self.nameLabel sizeToFit];
+    [self.shortDescriptionLabel sizeToFit];
+    [self.timeLabel sizeToFit];
 }
 
 @end

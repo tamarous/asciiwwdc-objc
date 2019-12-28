@@ -28,6 +28,7 @@
 		BBF85D8E20AFD4F300DAFE1E /* TracksTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBF85D8D20AFD4F300DAFE1E /* TracksTableViewController.m */; };
 		BBF85D9120AFD79C00DAFE1E /* TrackHeaderView.m in Sources */ = {isa = PBXBuildFile; fileRef = BBF85D9020AFD79C00DAFE1E /* TrackHeaderView.m */; };
 		BBF85D9420B0019D00DAFE1E /* MyWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBF85D9320B0019D00DAFE1E /* MyWebViewController.m */; };
+		DCD164B58C7CCC1B7060F52A /* NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DCD1607D7BB7DA986E4E9293 /* NetworkManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +75,8 @@
 		BBF85D9220B0019D00DAFE1E /* MyWebViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyWebViewController.h; sourceTree = "<group>"; };
 		BBF85D9320B0019D00DAFE1E /* MyWebViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyWebViewController.m; sourceTree = "<group>"; };
 		BBF85D9620B005A500DAFE1E /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		DCD1607D7BB7DA986E4E9293 /* NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkManager.m; sourceTree = "<group>"; };
+		DCD16317D944EEFCFA31A6ED /* NetworkManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkManager.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +200,8 @@
 				BB3A419C2110C3CE0036343C /* UITabBarController+AutoRotate.m */,
 				BB3A419E211217090036343C /* ZWCacheURLProtocol.h */,
 				BB3A419F211217090036343C /* ZWCacheURLProtocol.m */,
+				DCD1607D7BB7DA986E4E9293 /* NetworkManager.m */,
+				DCD16317D944EEFCFA31A6ED /* NetworkManager.h */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -328,6 +333,7 @@
 				BBAAD10E20B6FE7000C82264 /* FavoritesTableViewController.m in Sources */,
 				BBF85D8B20AFB31F00DAFE1E /* ConferenceTableViewCell.m in Sources */,
 				BBAC694220ADACEC001F5D59 /* Session.m in Sources */,
+				DCD164B58C7CCC1B7060F52A /* NetworkManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
