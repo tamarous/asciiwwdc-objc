@@ -25,23 +25,14 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
     [super viewDidLoad];
     
     self.navigationItem.title = self.trackTitle;
-    self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAutomatic;
-    
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kSessionTableViewCell];
-    
     [self.tableView setTableFooterView:[UIView new]];
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (void) setTracks:(NSArray *)tracks {
+- (void)setTracks:(NSArray *)tracks {
     _tracks = [tracks copy];
-    _isOpen = [[[_tracks.rac_sequence map:^id _Nullable(id  _Nullable value) {
+    self.isOpen = [[[self.tracks.rac_sequence map:^id _Nullable(id  _Nullable value) {
         return @NO;
     }] array] mutableCopy];
 }
@@ -53,7 +44,7 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if ([_isOpen[section] boolValue]) {
+    if ([self.isOpen[section] boolValue]) {
         Track *track = [self.tracks objectAtIndex:section];
         return track.sessions.count;
     }
@@ -62,11 +53,11 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kSessionTableViewCell forIndexPath:indexPath];
-    if ( !cell) {
+    if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kSessionTableViewCell];
     }
     
-    Track *track = [_tracks objectAtIndex:indexPath.section];
+    Track *track = [self.tracks objectAtIndex:indexPath.section];
     Session *session = [track.sessions objectAtIndex:indexPath.row];
     cell.textLabel.text = session.title;
     cell.textLabel.textAlignment = NSTextAlignmentLeft;
@@ -79,7 +70,7 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     TrackHeaderView *trackHeaderView = [[TrackHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, TRACK_HEADER_HEIGHT)];
-    Track *track = [_tracks objectAtIndex:section];
+    Track *track = [self.tracks objectAtIndex:section];
     [trackHeaderView setTitle:track.trackName forState:UIControlStateNormal];
     [trackHeaderView setTag:section];
     
@@ -89,7 +80,7 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    Track *track = [_tracks objectAtIndex:indexPath.section];
+    Track *track = [self.tracks objectAtIndex:indexPath.section];
     Session *session = [track.sessions objectAtIndex:indexPath.row];
     NSURL *requestURL = [NSURL URLWithString:session.urlString relativeToURL:[NSURL URLWithString:kASCIIWWDCHomepageURLString]];
     
@@ -102,13 +93,12 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
 
 #pragma mark - TrackHeaderViewDelegate
 - (void)trackDidClicked:(TrackHeaderView *)trackHeaderView {
-    BOOL reverse = ![_isOpen[trackHeaderView.tag] boolValue];
-    _isOpen[trackHeaderView.tag] = [NSNumber numberWithBool:reverse];
+    BOOL reverse = ![self.isOpen[trackHeaderView.tag] boolValue];
+    self.isOpen[trackHeaderView.tag] = [NSNumber numberWithBool:reverse];
     [self.tableView reloadSections:[[NSIndexSet alloc] initWithIndex:trackHeaderView.tag] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-
-- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     return UIInterfaceOrientationMaskPortrait;
 }
 

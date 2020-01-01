@@ -17,7 +17,7 @@
 @implementation DBManager
 #pragma mark - DBManager
 
-- (instancetype) init {
+- (instancetype)init {
     self = [super init];
     if (self) {
         if ([self databaseExists]) {
@@ -29,11 +29,11 @@
     return self;
 }
 
-- (BOOL) databaseExists {
+- (BOOL)databaseExists {
     return self.dataBasePath != nil && self.dataBase != nil;
 }
 
-- (BOOL) tableExists:(NSString *) tableName {
+- (BOOL)tableExists:(NSString *) tableName {
     if (! [self databaseExists]) {
         NSLog(@"database not exist");
         return NO;
@@ -41,7 +41,7 @@
     return [self.dataBase tableExists:tableName];
 }
 
-+ (instancetype) sharedManager {
++ (instancetype)sharedManager {
     static DBManager *manager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -50,18 +50,18 @@
     return manager;
 }
 
-- (void) dealloc {
+- (void)dealloc {
     [self.dataBase close];
 }
 
-- (void) createDatabase {
+- (void)createDatabase {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     self.dataBasePath = [paths[0] stringByAppendingPathComponent:@"sessions.db"];
     self.dataBase = [FMDatabase databaseWithPath:self.dataBasePath];
     NSLog(@"%@", self.dataBasePath);
 }
 
-- (BOOL) createTable:(NSString *)tableName statementString:(NSString *)statementString {
+- (BOOL)createTable:(NSString *)tableName statementString:(NSString *)statementString {
     if ([self databaseExists]) {
         if ([self.dataBase open]) {
             if (! [self.dataBase tableExists:tableName]) {
@@ -77,7 +77,7 @@
     return NO;
 }
 
-- (BOOL) executeStatementString:(NSString *) statementString inTable:(NSString *)tableName {
+- (BOOL)executeStatementString:(NSString *)statementString inTable:(NSString *)tableName {
     if ([self.dataBase open]) {
         if (! [self.dataBase executeStatements:statementString]) {
             NSLog(@"create table:%@ failed.", tableName);
@@ -89,10 +89,10 @@
     return NO;
 }
 
-- (BOOL) executeInsertString:(NSString *) insertString inTable:(NSString *)tableName {
+- (BOOL)executeInsertString:(NSString *)insertString inTable:(NSString *)tableName {
     if ([self.dataBase open]) {
         if ([self.dataBase tableExists: tableName]) {
-            if (! [self.dataBase executeUpdate:insertString]) {
+            if (![self.dataBase executeUpdate:insertString]) {
                 if ([self.dataBase hadError]) {
                     NSLog(@"Error:%@", [[self.dataBase lastError] domain]);
                 }
@@ -108,7 +108,7 @@
 }
 
 
-- (BOOL) executeUpdateString:(NSString *) updateString inTable:(NSString *)tableName {
+- (BOOL)executeUpdateString:(NSString *)updateString inTable:(NSString *)tableName {
     if ([self.dataBase open]) {
         if ([self.dataBase tableExists: tableName]) {
             if (! [self.dataBase executeUpdate:updateString]) {
@@ -129,33 +129,33 @@
 
 #pragma mark - Conference related
 
-- (BOOL) saveConference:(Conference *)conference {
-    if (! [self tableExists:[Conference tableName]]) {
+- (BOOL)saveConference:(Conference *)conference {
+    if (![self tableExists:[Conference tableName]]) {
         [self createTable:[Conference tableName] statementString:[Conference stringForCreateTable]];
     }
     return [self executeInsertString:[Conference stringForInsertConference:conference] inTable:[Conference tableName]];
 }
 
-- (BOOL) updateConference:(Conference *)conference {
+- (BOOL)updateConference:(Conference *)conference {
     return [self executeUpdateString:[Conference stringForUpdateConference:conference] inTable:[Conference tableName]];
 }
 
-- (BOOL) saveConferencesArray:(NSArray *)conferences {
+- (BOOL)saveConferencesArray:(NSArray *)conferences {
     @try{
         if ([self.dataBase open]) {
-            if (! [self tableExists:[Conference tableName]]) {
+            if (![self tableExists:[Conference tableName]]) {
                 [self createTable:[Conference tableName] statementString:[Conference stringForCreateTable]];
             }
             [self.dataBase beginTransaction];
             for(Conference *conference in conferences) {
                 NSString *insertStr = [Conference stringForInsertConference:conference];
                 BOOL res = [self.dataBase executeUpdate:insertStr];
-                if (! res) {
+                if (!res) {
                     NSLog(@"failed insert %@", conference.description);
                 }
                 
                 res = [self saveTracksArray:conference.tracks];
-                if (! res) {
+                if (!res) {
                     NSLog(@"Failed insert %@ tracks", conferences.description);
                 }
                 
@@ -174,7 +174,7 @@
     
 }
 
-- (NSArray *) loadConferencesArrayFromDatabaseWithQueryString:(NSString *)queryString {
+- (NSArray *)loadConferencesArrayFromDatabaseWithQueryString:(NSString *)queryString {
     NSMutableArray *conferences = [NSMutableArray array];
     if ([self.dataBase open]) {
         if (! [self.dataBase tableExists:[Conference tableName]]) {
@@ -201,33 +201,33 @@
 }
 
 #pragma mark - Track related
-- (BOOL) saveTrack:(Track *)track {
-    if (! [self tableExists:[Track tableName]]) {
+- (BOOL)saveTrack:(Track *)track {
+    if (![self tableExists:[Track tableName]]) {
         [self createTable:[Track tableName] statementString:[Track stringForCreateTable]];
     }
     return [self executeInsertString:[Track stringForInsertTrack:track] inTable:[Track tableName]];
 }
 
-- (BOOL) updateTrack:(Track *)track {
+- (BOOL)updateTrack:(Track *)track {
     return [self executeUpdateString:[Track stringForUpdateTrack:track] inTable:[Track tableName]];
 }
 
-- (BOOL) saveTracksArray:(NSArray *)tracks {
+- (BOOL)saveTracksArray:(NSArray *)tracks {
     if ([self.dataBase open]) {
-        if (! [self tableExists:[Track tableName]]) {
+        if (![self tableExists:[Track tableName]]) {
             [self createTable:[Track tableName] statementString:[Track stringForCreateTable]];
         }
-        if (! self.dataBase.isInTransaction) {
+        if (!self.dataBase.isInTransaction) {
             @try{
                 [self.dataBase beginTransaction];
                 for (Track *track in tracks) {
                     NSString *string = [Track stringForInsertTrack:track];
                     BOOL res = [self.dataBase executeUpdate:string];
-                    if (! res) {
+                    if (!res) {
                         NSLog(@"Failed save tracks");
                     }
                     res = [self saveSessionsArray:track.sessions];
-                    if (! res) {
+                    if (!res) {
                         NSLog(@"Failed save sessions, track name %@", track.trackName);
                     }
                 }
@@ -241,11 +241,11 @@
             for (Track *track in tracks) {
                 NSString *string = [Track stringForInsertTrack:track];
                 BOOL res = [self.dataBase executeUpdate:string];
-                if (! res) {
+                if (!res) {
                     NSLog(@"Failed save tracks");
                 }
                 res = [self saveSessionsArray:track.sessions];
-                if (! res) {
+                if (!res) {
                     NSLog(@"Failed save sessions, track name %@", track.trackName);
                 }
             }
@@ -257,7 +257,7 @@
 - (NSArray *)loadTracksArrayFromDatabaseWithQueryString:(NSString *)queryString {
     NSMutableArray *tracks = [NSMutableArray array];
     if ([self.dataBase open]) {
-        if (! [self.dataBase tableExists:[Track tableName]]) {
+        if (![self.dataBase tableExists:[Track tableName]]) {
             return nil;
         }
         if (queryString == nil) {
@@ -280,23 +280,23 @@
 
 #pragma mark - Session related
 
-- (BOOL) updateSession:(Session *)session {
+- (BOOL)updateSession:(Session *)session {
     return [self executeUpdateString:[Session stringForUpdateSession:session] inTable:[Session tableName]];
 }
 
-- (BOOL) saveSession:(Session *)session {
-    if (! [self tableExists:[Session tableName]]) {
+- (BOOL)saveSession:(Session *)session {
+    if (![self tableExists:[Session tableName]]) {
         [self createTable:[Session tableName] statementString:[Session stringForCreateTable]];
     }
     return [self executeInsertString:[Session stringForInsertSession:session] inTable:[Session tableName]];
 }
 
-- (BOOL) saveSessionsArray:(NSArray *)sessions {
+- (BOOL)saveSessionsArray:(NSArray *)sessions {
     if ([self.dataBase open]) {
-        if (! [self tableExists:[Session tableName]]) {
+        if (![self tableExists:[Session tableName]]) {
             [self createTable:[Session tableName] statementString:[Session stringForCreateTable]];
         }
-        if (! self.dataBase.isInTransaction) {
+        if (!self.dataBase.isInTransaction) {
             @try{
                 [self.dataBase beginTransaction];
                 for(Session *session in sessions) {
@@ -321,10 +321,10 @@
     }
 }
 
-- (NSArray *) loadSessionsArrayFromDatabaseWithQueryString:(NSString *)queryString {
+- (NSArray *)loadSessionsArrayFromDatabaseWithQueryString:(NSString *)queryString {
     NSMutableArray *sessions = [NSMutableArray array];
     if ([self.dataBase open]) {
-        if (! [self.dataBase tableExists:[Session tableName]]) {
+        if (![self.dataBase tableExists:[Session tableName]]) {
             return nil;
         }
         if (queryString == nil) {
@@ -346,8 +346,8 @@
     return [sessions copy];
 }
 
-- (BOOL) isFavoredForSession:(Session *)session {
-    if ( ![self tableExists:[Session tableName]]) {
+- (BOOL)isFavoredForSession:(Session *)session {
+    if (![self tableExists:[Session tableName]]) {
         return NO;
     }
     int result = NO;

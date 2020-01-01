@@ -14,70 +14,47 @@
 #import "DBManager.h"
 #import <SVProgressHUD.h>
 #import "ZWCacheURLProtocol.h"
+#import <ReactiveObjC/ReactiveObjC.h>
 
-@interface MyWebViewController () <WKNavigationDelegate>
+@interface MyWebViewController() <WKNavigationDelegate>
 @property (nonatomic, strong) WKWebView *webView;
 @property (nonatomic, strong) UIProgressView *progressView;
 @property (nonatomic, assign) BOOL dataSaved;
 @property (nonatomic, strong) UIBarButtonItem *favorButtonItem;
+@property (nonatomic, strong) RACCommand *saveContentCommand;
+@property (nonatomic, strong) RACCommand *loadRequestCommand;
 @end
 
 @implementation MyWebViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     [ZWCacheURLProtocol startHookNetwork];
-    
-    
-    
-    
+
     self.navigationItem.title = self.session.title;
     [self.navigationItem.titleView sizeToFit];
     self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAutomatic;
     self.navigationController.navigationBar.translucent = NO;
     
     NSString *imageName = (self.session.isFavored ? @"Favor":@"Unfavor");
-    self.favorButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName] style:UIBarButtonItemStylePlain target:self action:@selector(favorite)];
+    self.favorButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:imageName] style:UIBarButtonItemStylePlain target:self action:@selector(toggleFavorite)];
 
     self.navigationItem.rightBarButtonItem = self.favorButtonItem;
-    
-    [self save];
-    
-    [self loadRequest];
+    [self.view addSubview:self.webView];
+    [self.view addSubview:self.progressView];
+   
+    [self bindEvents];
+    [[RACScheduler scheduler] schedule:^{
+        [self.saveContentCommand execute:nil];
+    }];
+    [[RACScheduler mainThreadScheduler] schedule:^{
+        [self.loadRequestCommand execute:nil];
+    }];
 }
 
-- (void) loadRequest {
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:self.requestURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:6];
-    [self.webView loadRequest:request];
-}
-
-- (UIProgressView *) progressView {
-    if (_progressView == nil) {
-        UIEdgeInsets safeArea = self.view.safeAreaInsets;
-        CGRect safeFrame = CGRectMake(safeArea.left, safeArea.top, self.view.frame.size.width, 1);
-        _progressView = [[UIProgressView alloc] initWithFrame:safeFrame];
-        _progressView.tintColor = [UIColor blueColor];
-        _progressView.trackTintColor = [UIColor whiteColor];
-        [self.view addSubview:_progressView];
-    }
-    return _progressView;
-}
-
-
-- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskPortrait;
-}
-
-- (void) dealloc {
-    [_webView removeObserver:self forKeyPath:@"estimatedProgress"];
-    
-    [ZWCacheURLProtocol stopHookNetwork];
-}
-
-- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-    if (object == _webView && [keyPath isEqualToString:@"estimatedProgress"]) {
-        CGFloat newProgress = [[change objectForKey:NSKeyValueChangeNewKey] floatValue];
+- (void)bindEvents {
+    [RACObserve(self.webView, estimatedProgress) subscribeNext:^(id  _Nullable x) {
+        CGFloat newProgress = [(NSNumber *)x floatValue];
         self.progressView.alpha = 1.0f;
         [self.progressView setProgress:newProgress animated:YES];
         if (newProgress >= 1.0f) {
@@ -87,40 +64,50 @@
                 [self.progressView setProgress:0.0f animated:NO];
             }];
         }
-    } else {
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
+    }];
+    [[self.loadRequestCommand.executionSignals concat] subscribeCompleted:^{
+        NSLog(@"load request completed.");
+    }];
 }
 
-- (void) favorite {
+- (UIProgressView *)progressView {
+    if (!_progressView) {
+        UIEdgeInsets safeArea = self.view.safeAreaInsets;
+        CGRect safeFrame = CGRectMake(safeArea.left, safeArea.top, self.view.frame.size.width, 1);
+        _progressView = [[UIProgressView alloc] initWithFrame:safeFrame];
+        _progressView.tintColor = [UIColor blueColor];
+        _progressView.trackTintColor = [UIColor whiteColor];
+    }
+    return _progressView;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskLandscapeRight | UIInterfaceOrientationMaskLandscapeLeft | UIInterfaceOrientationMaskPortrait;
+}
+
+- (void)dealloc {
+    [ZWCacheURLProtocol stopHookNetwork];
+}
+
+- (void)toggleFavorite {
     UIView *itemView = [self.favorButtonItem performSelector:@selector(view)];
     UIImageView *imageView = [[itemView.subviews firstObject].subviews firstObject];
     
     if (self.session.isFavored) {
         self.favorButtonItem.image = [UIImage imageNamed:@"Unfavor"];
-        imageView.contentMode = UIViewContentModeScaleAspectFill;
-        imageView.autoresizingMask = UIViewAutoresizingNone;
-        imageView.clipsToBounds = NO;
-        imageView.transform = CGAffineTransformMakeScale(0, 0);
-        [UIView animateWithDuration:1.0 delay:0.5 usingSpringWithDamping:0.5 initialSpringVelocity:10 options:UIViewAnimationOptionCurveLinear animations:^{
-            imageView.transform = CGAffineTransformIdentity;
-        } completion:nil];
     } else {
         self.favorButtonItem.image = [UIImage imageNamed:@"Favor"];
-        imageView.contentMode = UIViewContentModeScaleAspectFill;
-        imageView.autoresizingMask = UIViewAutoresizingNone;
-        imageView.clipsToBounds = NO;
-        imageView.transform = CGAffineTransformMakeScale(0, 0);
-        [UIView animateWithDuration:1.0 delay:0.5 usingSpringWithDamping:0.5 initialSpringVelocity:10 options:UIViewAnimationOptionCurveLinear animations:^{
-            imageView.transform = CGAffineTransformIdentity;
-        } completion:nil];
     }
+    imageView.contentMode = UIViewContentModeScaleAspectFill;
+    imageView.autoresizingMask = UIViewAutoresizingNone;
+    imageView.clipsToBounds = NO;
+    imageView.transform = CGAffineTransformMakeScale(0, 0);
+    [UIView animateWithDuration:1.0 delay:0.5 usingSpringWithDamping:0.5 initialSpringVelocity:10 options:UIViewAnimationOptionCurveLinear animations:^{
+        imageView.transform = CGAffineTransformIdentity;
+    } completion:nil];
     
-    [self toggleFavored];
-}
-
-- (void) toggleFavored {
     self.session.isFavored = !self.session.isFavored;
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[DBManager sharedManager] updateSession:self.session];
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -130,13 +117,7 @@
     });
 }
 
-- (void) save {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [[DBManager sharedManager] saveSession:self.session];
-    });
-}
-
-- (WKWebView *) webView {
+- (WKWebView *)webView {
     if (!_webView) {
         NSMutableString *str = [NSMutableString string];
         [str appendString:@"var header = document.getElementsByTagName(\"header\")[0];"];
@@ -157,37 +138,58 @@
         CGRect safeFrame = CGRectMake(safeArea.left, safeArea.top, self.view.frame.size.width, self.view.frame.size.height);
         _webView = [[WKWebView alloc] initWithFrame:safeFrame configuration:configuration];
         _webView.navigationDelegate = self;
-        
-        [_webView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
-        
-        [self.view addSubview:_webView];
     }
     return _webView;
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (RACCommand *)saveContentCommand {
+    if (!_saveContentCommand) {
+        _saveContentCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
+            return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+                [[DBManager sharedManager] saveSession:self.session];
+                [subscriber sendCompleted];
+                return nil;
+            }];
+        }];
+    }
+    return _saveContentCommand;
+}
+
+- (RACCommand *)loadRequestCommand {
+    if (!_loadRequestCommand) {
+        @weakify(self);
+        _loadRequestCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
+            @strongify(self);
+            return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+                @strongify(self);
+                NSURLRequest *request = [[NSURLRequest alloc] initWithURL:self.requestURL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:6];
+                [self.webView loadRequest:request];
+                [subscriber sendCompleted];
+                return nil;
+            }];
+        }];
+    }
+    return _loadRequestCommand;
 }
 
 #pragma mark - WKNavigationDelegate
-- (void) webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation {
+- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation {
     NSLog(@"didCommitNavigation");
 }
 
-- (void) webView:(WKWebView *) webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation {
+- (void)webView:(WKWebView *) webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation {
     NSLog(@"didStartProvisionalNavigation");
 }
 
-- (void) webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
     NSLog(@"Fail navigation with Error:%@",error.description);
 }
 
-- (void) webView:(WKWebView *) webView didFailLoadWithError:(nonnull NSError *)error {
+- (void)webView:(WKWebView *) webView didFailLoadWithError:(nonnull NSError *)error {
     NSLog(@"Fail load with Error:%@",error.description);
 }
 
-- (void) webView:(WKWebView *) webView didFailProvisionalNavigation:(null_unspecified WKNavigation *)navigation withError:(nonnull NSError *)error {
+- (void)webView:(WKWebView *) webView didFailProvisionalNavigation:(null_unspecified WKNavigation *)navigation withError:(nonnull NSError *)error {
     [SVProgressHUD showErrorWithStatus:error.localizedDescription];
     [SVProgressHUD dismissWithDelay:2];
 }

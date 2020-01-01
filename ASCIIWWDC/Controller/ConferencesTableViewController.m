@@ -16,6 +16,7 @@
 #import "DBManager.h"
 #import <ReactiveObjC/ReactiveObjC.h>
 #import "NetworkManager.h"
+#import <Masonry/Masonry.h>
 static NSString * const kConferenceTableViewCell = @"ConferenceTableViewCell";
 static NSString * const kLoadingTableViewCell = @"LoadingTableViewCell";
 static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
@@ -40,8 +41,6 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
     [super viewDidLoad];
     self.navigationItem.title = @"ASCIIWWDC";
 
-    UIEdgeInsets safeArea = self.view.safeAreaInsets;
-    self.tableView.frame = CGRectMake(safeArea.left, safeArea.top, CGRectGetWidth(self.tableView.bounds), CGRectGetHeight([UIScreen mainScreen].bounds)-safeArea.bottom);
     self.tableView.tableFooterView = [UIView new];
     self.tableView.separatorColor = [UIColor colorWithWhite:0.95 alpha:1.0];
     self.tableView.backgroundColor = [UIColor colorWithWhite:0.92 alpha:1.0];
@@ -51,56 +50,70 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
     
     self.navigationItem.searchController = self.searchController;
     self.definesPresentationContext = true;
+    
+    [self.view addSubview:self.indicatorView];
+    [self.indicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.height.mas_equalTo(40);
+        make.width.mas_equalTo(40);
+        make.center.mas_equalTo(self.view);
+    }];
 
     [self bindEvents];
-    [[RACScheduler schedulerWithPriority:RACSchedulerPriorityDefault] schedule:^{
-        [self.loadContentFromDiskCommmand execute:nil];
-    }];
+    [self.loadContentFromNetworkCommand execute:nil];
 }
 
 #pragma mark - ViewController Life Cycle
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [[RACScheduler schedulerWithPriority:RACSchedulerPriorityDefault] schedule:^{
-        [self.saveContentCommand execute:nil];
-    }];
+    [self.saveContentCommand execute:nil];
 }
 
 #pragma mark - Actions
-
 - (void)bindEvents {
     @weakify(self);
     [[RACObserve(self, isLoading) deliverOnMainThread] subscribeNext:^(NSNumber *x) {
         @strongify(self);
-        if (![x boolValue]) {
+        if ([x boolValue]) {
+            [self.indicatorView startAnimating];
+        } else {
             [self.indicatorView stopAnimating];
-            [self.indicatorView removeFromSuperview];
         }
+        self.indicatorView.hidden = ![x boolValue];
     }];
     [self.saveContentCommand.executionSignals subscribeNext:^(id  _Nullable x) {
         @strongify(self);
         self.dataSaved = YES;
     }];
-    [[self.loadContentFromDiskCommmand.executionSignals concat] subscribeNext:^(RACTuple * _Nullable x) {
+    
+    [self.loadContentFromDiskCommmand.executing subscribeNext:^(NSNumber * _Nullable x) {
+        @strongify(self);
+        self.isLoading = [x boolValue];
+    }];
+    [self.loadContentFromNetworkCommand.executing subscribeNext:^(NSNumber * _Nullable x) {
+        @strongify(self);
+        self.isLoading = [x boolValue];
+    }];
+    [[self.loadContentFromDiskCommmand.executionSignals switchToLatest] subscribeNext:^(RACTuple * _Nullable x) {
         @strongify(self);
         RACTupleUnpack(NSArray *conferences) = x;
         self.conferences = conferences;
-        [[RACScheduler mainThreadScheduler] schedule:^{
+        self.isLoading = NO;
+        dispatch_async(dispatch_get_main_queue(), ^{
             @strongify(self);
             [self.tableView reloadData];
-        }];
+        });
     } error:^(NSError * _Nullable error) {
         [self.loadContentFromNetworkCommand execute:nil];
     }];
-    [[self.loadContentFromNetworkCommand.executionSignals concat] subscribeNext:^(RACTuple * _Nullable x) {
+    [[self.loadContentFromNetworkCommand.executionSignals switchToLatest] subscribeNext:^(RACTuple * _Nullable x) {
         @strongify(self);
         self.isLoading = NO;
         RACTupleUnpack(NSArray *conferences) = x;
         self.conferences = conferences;
-        [[RACScheduler mainThreadScheduler] schedule:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
             @strongify(self);
             [self.tableView reloadData];
-        }];
+        });
     }];
 }
 
@@ -123,13 +136,13 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.isFiltering ? self.filteredSessions.count : (self.isLoading ? 1 : self.conferences.count);
+    return self.isFiltering ? self.filteredSessions.count : (self.isLoading ? 0 : self.conferences.count);
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (self.isFiltering) {
         UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFilteredTableViewCell forIndexPath:indexPath];
-        if (! cell) {
+        if (!cell) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kFilteredTableViewCell];
         }
         Session *session = (Session *)[self.filteredSessions objectAtIndex:indexPath.row];
@@ -137,23 +150,13 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
         cell.textLabel.textAlignment = NSTextAlignmentLeft;
         return cell;
     } else {
-        if (self.isLoading) {
-            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kLoadingTableViewCell forIndexPath:indexPath];
-            if (! cell) {
-                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kLoadingTableViewCell];
-            }
-            [cell addSubview:self.indicatorView];
-            [self.indicatorView startAnimating];
-            return cell;
-        } else {
-            ConferenceTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kConferenceTableViewCell forIndexPath:indexPath];
-            if (! cell) {
-                cell = [[ConferenceTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kConferenceTableViewCell];
-            }
-            Conference *conference = [_conferences objectAtIndex:indexPath.row];
-            [cell configureWithConference:conference];
-            return cell;
+        ConferenceTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kConferenceTableViewCell forIndexPath:indexPath];
+        if (!cell) {
+            cell = [[ConferenceTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kConferenceTableViewCell];
         }
+        Conference *conference = [_conferences objectAtIndex:indexPath.row];
+        [cell configureWithConference:conference];
+        return cell;
     }
 }
 
@@ -206,8 +209,6 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
 - (UIActivityIndicatorView *)indicatorView {
     if (!_indicatorView) {
         _indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        float width = [UIScreen mainScreen].bounds.size.width;
-        _indicatorView.frame = CGRectMake(width/2-18, 4, 36, 36);
         _indicatorView.hidesWhenStopped = YES;
     }
     return _indicatorView;
