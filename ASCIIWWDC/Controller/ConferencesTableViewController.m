@@ -28,7 +28,9 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
 @property (nonatomic, strong) UISearchController *searchController;
 @property (nonatomic, assign) BOOL isFiltering;
 @property (nonatomic, copy) NSArray *filteredSessions;
-- (void)loadContents;
+@property (nonatomic, strong) RACCommand<id, RACTuple *> *loadContentFromNetworkCommand;
+@property (nonatomic, strong) RACCommand<id, RACTuple *> *loadContentFromDiskCommmand;
+@property (nonatomic, strong) RACCommand<id, RACTuple *> *saveContentCommand;
 - (void)bindEvents;
 @end
 
@@ -37,11 +39,9 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"ASCIIWWDC";
-    self.navigationController.navigationBar.prefersLargeTitles = YES;
-    self.navigationItem.largeTitleDisplayMode = UINavigationItemLargeTitleDisplayModeAlways;
-    
+
     UIEdgeInsets safeArea = self.view.safeAreaInsets;
-    self.tableView.frame = CGRectMake(safeArea.left, safeArea.top, self.tableView.bounds.size.width, self.tableView.bounds.size.height);
+    self.tableView.frame = CGRectMake(safeArea.left, safeArea.top, CGRectGetWidth(self.tableView.bounds), CGRectGetHeight([UIScreen mainScreen].bounds)-safeArea.bottom);
     self.tableView.tableFooterView = [UIView new];
     self.tableView.separatorColor = [UIColor colorWithWhite:0.95 alpha:1.0];
     self.tableView.backgroundColor = [UIColor colorWithWhite:0.92 alpha:1.0];
@@ -54,68 +54,62 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
 
     [self bindEvents];
     [[RACScheduler schedulerWithPriority:RACSchedulerPriorityDefault] schedule:^{
-        [self loadContents];
+        [self.loadContentFromDiskCommmand execute:nil];
     }];
 }
 
 #pragma mark - ViewController Life Cycle
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self saveContents];
+    [[RACScheduler schedulerWithPriority:RACSchedulerPriorityDefault] schedule:^{
+        [self.saveContentCommand execute:nil];
+    }];
 }
 
 #pragma mark - Actions
 
 - (void)bindEvents {
+    @weakify(self);
     [[RACObserve(self, isLoading) deliverOnMainThread] subscribeNext:^(NSNumber *x) {
+        @strongify(self);
         if (![x boolValue]) {
             [self.indicatorView stopAnimating];
             [self.indicatorView removeFromSuperview];
         }
     }];
-}
-
-- (void)loadContents {
-    if (self.isLoading) {
-        return;
-    }
-    self.isLoading = YES;
-    self.conferences = [[DBManager sharedManager] loadConferencesArrayFromDatabaseWithQueryString:nil];
-    if (!self.conferences || self.conferences.count == 0) {
-        NSLog(@"Loading contents from network");
-        @weakify(self);
-        [NetworkManager loadConferencesFromURL:kASCIIWWDCHomepageURLString completion:^(NSArray *conferences, NSError *error) {
+    [self.saveContentCommand.executionSignals subscribeNext:^(id  _Nullable x) {
+        @strongify(self);
+        self.dataSaved = YES;
+    }];
+    [[self.loadContentFromDiskCommmand.executionSignals concat] subscribeNext:^(RACTuple * _Nullable x) {
+        @strongify(self);
+        RACTupleUnpack(NSArray *conferences) = x;
+        self.conferences = conferences;
+        [[RACScheduler mainThreadScheduler] schedule:^{
             @strongify(self);
-            self.isLoading = NO;
-            if (conferences) {
-                self.conferences = conferences;
-                [[RACScheduler schedulerWithPriority:RACSchedulerPriorityDefault] schedule:^{
-                    [[DBManager sharedManager] saveConferencesArray:self.conferences];
-                }];
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.tableView reloadData];
-            });
-        }];
-    } else {
-        NSLog(@"Loading contents from local disk.");
-        self.isLoading = NO;
-        dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
-        });
-    }
+        }];
+    } error:^(NSError * _Nullable error) {
+        [self.loadContentFromNetworkCommand execute:nil];
+    }];
+    [[self.loadContentFromNetworkCommand.executionSignals concat] subscribeNext:^(RACTuple * _Nullable x) {
+        @strongify(self);
+        self.isLoading = NO;
+        RACTupleUnpack(NSArray *conferences) = x;
+        self.conferences = conferences;
+        [[RACScheduler mainThreadScheduler] schedule:^{
+            @strongify(self);
+            [self.tableView reloadData];
+        }];
+    }];
 }
 
 - (void)saveContents {
     if (self.dataSaved) {
         return;
     }
-    NSLog(@"Conferences saved");
-    @weakify(self);
     [[RACScheduler schedulerWithPriority:RACSchedulerPriorityDefault] schedule:^{
-        @strongify(self);
-        [[DBManager sharedManager] saveConferencesArray:self.conferences];
-        self.dataSaved = YES;
+        [self.saveContentCommand execute:nil];
     }];
 }
 
@@ -229,5 +223,56 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
     }
     return _searchController;
 };
+
+- (RACCommand *)loadContentFromDiskCommmand {
+    if (!_loadContentFromDiskCommmand) {
+        _loadContentFromDiskCommmand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
+            return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+                NSArray *conferences = [[DBManager sharedManager] loadConferencesArrayFromDatabaseWithQueryString:nil];
+                if (conferences && conferences.count > 0) {
+                    [subscriber sendNext:RACTuplePack(conferences)];
+                    [subscriber sendCompleted];
+                } else {
+                    NSError *error = [NSError errorWithDomain:NSCocoaErrorDomain code:-999 userInfo:nil];
+                    [subscriber sendError:error];
+                }
+                return nil;
+            }];
+        }];
+    }
+    return _loadContentFromDiskCommmand;
+}
+
+- (RACCommand *)loadContentFromNetworkCommand {
+    if (!_loadContentFromNetworkCommand) {
+        _loadContentFromNetworkCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
+            return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+                [NetworkManager loadConferencesFromURL:kASCIIWWDCHomepageURLString completion:^(NSArray *conferences, NSError *error) {
+                    if (!error) {
+                        [subscriber sendNext:RACTuplePack(conferences)];
+                        [subscriber sendCompleted];
+                    } else {
+                        [subscriber sendError:error];
+                    }
+                }];
+                return nil;
+            }];
+        }];
+    }
+    return _loadContentFromNetworkCommand;
+}
+
+- (RACCommand *)saveContentCommand {
+    if (!_saveContentCommand) {
+        _saveContentCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
+            return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+                [[DBManager sharedManager] saveConferencesArray:self.conferences];
+                [subscriber sendCompleted];
+                return nil;
+            }];
+        }];
+    }
+    return _saveContentCommand;
+}
 @end
 
