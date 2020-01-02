@@ -3,11 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		76D350B5E55A8C30798C4B93 /* libPods-ASCIIWWDC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D9C82E92361BFD422D2F0CC /* libPods-ASCIIWWDC.a */; };
+		BB097CA623BCF5E9007F9748 /* ConferencesViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = BB097CA523BCF5E9007F9748 /* ConferencesViewModel.m */; };
 		BB3A41972110AB060036343C /* NSURLProtocol+WkWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3A41962110AB060036343C /* NSURLProtocol+WkWebView.m */; };
 		BB3A419A2110AE500036343C /* UINavigationController+AutoRotate.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3A41992110AE500036343C /* UINavigationController+AutoRotate.m */; };
 		BB3A419D2110C3CE0036343C /* UITabBarController+AutoRotate.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3A419C2110C3CE0036343C /* UITabBarController+AutoRotate.m */; };
@@ -35,6 +36,8 @@
 		3231660A62584FEE6CCBE6B1 /* Pods-ASCIIWWDC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ASCIIWWDC.release.xcconfig"; path = "Pods/Target Support Files/Pods-ASCIIWWDC/Pods-ASCIIWWDC.release.xcconfig"; sourceTree = "<group>"; };
 		5D9C82E92361BFD422D2F0CC /* libPods-ASCIIWWDC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ASCIIWWDC.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		973B1752149A4DEA5103B234 /* Pods-ASCIIWWDC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ASCIIWWDC.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ASCIIWWDC/Pods-ASCIIWWDC.debug.xcconfig"; sourceTree = "<group>"; };
+		BB097CA423BCF5E9007F9748 /* ConferencesViewModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConferencesViewModel.h; sourceTree = "<group>"; };
+		BB097CA523BCF5E9007F9748 /* ConferencesViewModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ConferencesViewModel.m; sourceTree = "<group>"; };
 		BB3A41952110AB060036343C /* NSURLProtocol+WkWebView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSURLProtocol+WkWebView.h"; sourceTree = "<group>"; };
 		BB3A41962110AB060036343C /* NSURLProtocol+WkWebView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSURLProtocol+WkWebView.m"; sourceTree = "<group>"; };
 		BB3A41982110AE500036343C /* UINavigationController+AutoRotate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UINavigationController+AutoRotate.h"; sourceTree = "<group>"; };
@@ -108,6 +111,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		BB097CA323BCF5A9007F9748 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				BB097CA423BCF5E9007F9748 /* ConferencesViewModel.h */,
+				BB097CA523BCF5E9007F9748 /* ConferencesViewModel.m */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		BB6DA70B20AC8CA800747820 = {
 			isa = PBXGroup;
 			children = (
@@ -129,6 +141,7 @@
 		BB6DA71620AC8CA800747820 /* ASCIIWWDC */ = {
 			isa = PBXGroup;
 			children = (
+				BB097CA323BCF5A9007F9748 /* ViewModel */,
 				BB6DA73020AC91CD00747820 /* Util */,
 				BB6DA72F20AC91B800747820 /* Controller */,
 				BB6DA72E20AC91B200747820 /* View */,
@@ -331,6 +344,7 @@
 				BB3A419A2110AE500036343C /* UINavigationController+AutoRotate.m in Sources */,
 				BBAC693F20ADACA7001F5D59 /* Track.m in Sources */,
 				BBAAD10E20B6FE7000C82264 /* FavoritesTableViewController.m in Sources */,
+				BB097CA623BCF5E9007F9748 /* ConferencesViewModel.m in Sources */,
 				BBF85D8B20AFB31F00DAFE1E /* ConferenceTableViewCell.m in Sources */,
 				BBAC694220ADACEC001F5D59 /* Session.m in Sources */,
 				DCD164B58C7CCC1B7060F52A /* NetworkManager.m in Sources */,

@@ -1,5 +1,3 @@
-//
-//  ConferencesTableViewController.m
 //  ASCIIWWDC
 //
 //  Created by 汪泽伟 on 2018/5/17.
@@ -7,31 +5,23 @@
 //
 
 #import "ConferencesTableViewController.h"
-#import "ParserManager.h"
 #import <UIImageView+WebCache.h>
 #import <SVProgressHUD.h>
-#import "ConferenceTableViewCell.h"
 #import "TracksTableViewController.h"
 #import "MyWebViewController.h"
-#import "DBManager.h"
 #import <ReactiveObjC/ReactiveObjC.h>
-#import "NetworkManager.h"
 #import <Masonry/Masonry.h>
+#import "ConferencesViewModel.h"
+#import "ConferenceTableViewCell.h"
+
 static NSString * const kConferenceTableViewCell = @"ConferenceTableViewCell";
 static NSString * const kLoadingTableViewCell = @"LoadingTableViewCell";
 static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
 
 @interface ConferencesTableViewController () <UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating>
-@property (nonatomic, copy) NSArray<Conference *> *conferences;
-@property (nonatomic, assign) BOOL isLoading;
-@property (nonatomic, assign) BOOL dataSaved;
 @property (nonatomic, strong) UIActivityIndicatorView *indicatorView;
 @property (nonatomic, strong) UISearchController *searchController;
-@property (nonatomic, assign) BOOL isFiltering;
-@property (nonatomic, copy) NSArray *filteredSessions;
-@property (nonatomic, strong) RACCommand<id, RACTuple *> *loadContentFromNetworkCommand;
-@property (nonatomic, strong) RACCommand<id, RACTuple *> *loadContentFromDiskCommmand;
-@property (nonatomic, strong) RACCommand<id, RACTuple *> *saveContentCommand;
+@property (nonatomic, strong) ConferencesViewModel *viewModel;
 - (void)bindEvents;
 @end
 
@@ -40,6 +30,8 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.navigationItem.title = @"ASCIIWWDC";
+    
+    self.viewModel = [[ConferencesViewModel alloc] init];
 
     self.tableView.tableFooterView = [UIView new];
     self.tableView.separatorColor = [UIColor colorWithWhite:0.95 alpha:1.0];
@@ -47,6 +39,10 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kLoadingTableViewCell];
     [self.tableView registerClass:[ConferenceTableViewCell class] forCellReuseIdentifier:kConferenceTableViewCell];
     [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:kFilteredTableViewCell];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    
+    self.viewModel.tableView = self.tableView;
     
     self.navigationItem.searchController = self.searchController;
     self.definesPresentationContext = true;
@@ -55,23 +51,23 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
     [self.indicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(40);
         make.width.mas_equalTo(40);
-        make.center.mas_equalTo(self.view);
+        make.centerY.mas_equalTo(self.view);
     }];
 
     [self bindEvents];
-    [self.loadContentFromNetworkCommand execute:nil];
+    [self.viewModel loadContent];
 }
 
 #pragma mark - ViewController Life Cycle
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.saveContentCommand execute:nil];
+    [self.viewModel saveContent];
 }
 
 #pragma mark - Actions
 - (void)bindEvents {
     @weakify(self);
-    [[RACObserve(self, isLoading) deliverOnMainThread] subscribeNext:^(NSNumber *x) {
+    [[RACObserve(self.viewModel, isLoading) deliverOnMainThread] subscribeNext:^(NSNumber *x) {
         @strongify(self);
         if ([x boolValue]) {
             [self.indicatorView startAnimating];
@@ -80,90 +76,17 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
         }
         self.indicatorView.hidden = ![x boolValue];
     }];
-    [self.saveContentCommand.executionSignals subscribeNext:^(id  _Nullable x) {
-        @strongify(self);
-        self.dataSaved = YES;
-    }];
-    
-    [self.loadContentFromDiskCommmand.executing subscribeNext:^(NSNumber * _Nullable x) {
-        @strongify(self);
-        self.isLoading = [x boolValue];
-    }];
-    [self.loadContentFromNetworkCommand.executing subscribeNext:^(NSNumber * _Nullable x) {
-        @strongify(self);
-        self.isLoading = [x boolValue];
-    }];
-    [[self.loadContentFromDiskCommmand.executionSignals switchToLatest] subscribeNext:^(RACTuple * _Nullable x) {
-        @strongify(self);
-        RACTupleUnpack(NSArray *conferences) = x;
-        self.conferences = conferences;
-        self.isLoading = NO;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            @strongify(self);
-            [self.tableView reloadData];
-        });
-    } error:^(NSError * _Nullable error) {
-        [self.loadContentFromNetworkCommand execute:nil];
-    }];
-    [[self.loadContentFromNetworkCommand.executionSignals switchToLatest] subscribeNext:^(RACTuple * _Nullable x) {
-        @strongify(self);
-        self.isLoading = NO;
-        RACTupleUnpack(NSArray *conferences) = x;
-        self.conferences = conferences;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            @strongify(self);
-            [self.tableView reloadData];
-        });
-    }];
 }
 
-- (void)saveContents {
-    if (self.dataSaved) {
-        return;
-    }
-    [[RACScheduler schedulerWithPriority:RACSchedulerPriorityDefault] schedule:^{
-        [self.saveContentCommand execute:nil];
-    }];
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
 }
 
-#pragma mark - Table view data source
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return self.isFiltering?44.0f:144.0f;
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.isFiltering ? self.filteredSessions.count : (self.isLoading ? 0 : self.conferences.count);
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (self.isFiltering) {
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFilteredTableViewCell forIndexPath:indexPath];
-        if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kFilteredTableViewCell];
-        }
-        Session *session = (Session *)[self.filteredSessions objectAtIndex:indexPath.row];
-        cell.textLabel.text = session.title;
-        cell.textLabel.textAlignment = NSTextAlignmentLeft;
-        return cell;
-    } else {
-        ConferenceTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kConferenceTableViewCell forIndexPath:indexPath];
-        if (!cell) {
-            cell = [[ConferenceTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kConferenceTableViewCell];
-        }
-        Conference *conference = [_conferences objectAtIndex:indexPath.row];
-        [cell configureWithConference:conference];
-        return cell;
-    }
-}
-
+#pragma mark - UITableViewDelegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     if (self.isFiltering) {
-        Session *session = [self.filteredSessions objectAtIndex:indexPath.row];
+        Session *session = [self.viewModel.filteredSessions objectAtIndex:indexPath.row];
         NSURL *requestURL = [NSURL URLWithString:session.urlString relativeToURL:[NSURL URLWithString:kASCIIWWDCHomepageURLString]];
         
         MyWebViewController *webViewController = [[MyWebViewController alloc] init];
@@ -174,15 +97,44 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
     } else {
         TracksTableViewController *tracksController = [[TracksTableViewController alloc] init];
         tracksController.hidesBottomBarWhenPushed = YES;
-        Conference *conference = [self.conferences objectAtIndex:indexPath.row];
+        Conference *conference = [self.viewModel.conferences objectAtIndex:indexPath.row];
         tracksController.tracks = conference.tracks;
         tracksController.trackTitle = conference.name;
         [self.navigationController pushViewController:tracksController animated:YES];
     }
 }
 
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskPortrait;
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return self.isFiltering?44.0f:144.0f;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.isFiltering ? self.viewModel.filteredSessions.count : (self.viewModel.isLoading ? 0 : self.viewModel.conferences.count);
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (self.isFiltering) {
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kFilteredTableViewCell forIndexPath:indexPath];
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kFilteredTableViewCell];
+        }
+        Session *session = (Session *)[self.viewModel.filteredSessions objectAtIndex:indexPath.row];
+        cell.textLabel.text = session.title;
+        cell.textLabel.textAlignment = NSTextAlignmentLeft;
+        return cell;
+    } else {
+        ConferenceTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kConferenceTableViewCell forIndexPath:indexPath];
+        if (!cell) {
+            cell = [[ConferenceTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kConferenceTableViewCell];
+        }
+        Conference *conference = [self.viewModel.conferences objectAtIndex:indexPath.row];
+        [cell configureWithConference:conference];
+        return cell;
+    }
 }
 
 #pragma mark - UISearchResultsUpdating
@@ -191,14 +143,7 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
 }
 
 - (void)filterSessionsForSearchText:(NSString *)query {
-    self.filteredSessions = [[[[self.conferences.rac_sequence map:^id _Nullable(Conference *_Nullable conference) {
-        return [[conference.tracks.rac_sequence map:^id _Nullable(Track *_Nullable track) {
-            return track.sessions.rac_sequence;
-        }] flatten];
-    }] flatten] filter:^BOOL(Session *_Nullable session) {
-        return [session.title.lowercaseString containsString:query.lowercaseString];
-    }] array];
-    [self.tableView reloadData];
+    [self.viewModel filterWithQuery:query];
 }
 
 #pragma mark - Getter & Setter
@@ -224,56 +169,5 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
     }
     return _searchController;
 };
-
-- (RACCommand *)loadContentFromDiskCommmand {
-    if (!_loadContentFromDiskCommmand) {
-        _loadContentFromDiskCommmand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-            return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
-                NSArray *conferences = [[DBManager sharedManager] loadConferencesArrayFromDatabaseWithQueryString:nil];
-                if (conferences && conferences.count > 0) {
-                    [subscriber sendNext:RACTuplePack(conferences)];
-                    [subscriber sendCompleted];
-                } else {
-                    NSError *error = [NSError errorWithDomain:NSCocoaErrorDomain code:-999 userInfo:nil];
-                    [subscriber sendError:error];
-                }
-                return nil;
-            }];
-        }];
-    }
-    return _loadContentFromDiskCommmand;
-}
-
-- (RACCommand *)loadContentFromNetworkCommand {
-    if (!_loadContentFromNetworkCommand) {
-        _loadContentFromNetworkCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-            return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
-                [NetworkManager loadConferencesFromURL:kASCIIWWDCHomepageURLString completion:^(NSArray *conferences, NSError *error) {
-                    if (!error) {
-                        [subscriber sendNext:RACTuplePack(conferences)];
-                        [subscriber sendCompleted];
-                    } else {
-                        [subscriber sendError:error];
-                    }
-                }];
-                return nil;
-            }];
-        }];
-    }
-    return _loadContentFromNetworkCommand;
-}
-
-- (RACCommand *)saveContentCommand {
-    if (!_saveContentCommand) {
-        _saveContentCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
-            return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
-                [[DBManager sharedManager] saveConferencesArray:self.conferences];
-                [subscriber sendCompleted];
-                return nil;
-            }];
-        }];
-    }
-    return _saveContentCommand;
-}
 @end
 
