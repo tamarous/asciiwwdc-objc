@@ -7,20 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <FMDB.h>
-#import "Conference.h"
-#import "Session.h"
-#import "Track.h"
 #import "BaseModel.h"
 @interface DBManager : NSObject
 
 + (instancetype)sharedManager;
-
-- (BOOL)tableExists:(NSString *)tableName;
-- (BOOL)createTable:(NSString *)tableName statementString:(NSString *)statementString;
-- (BOOL)executeInsertString:(NSString *)insertString inTable:(NSString *)tableName;
-- (BOOL)executeUpdateString:(NSString *)updateString inTable:(NSString *)tableName;
-
 - (NSArray *)loadConferencesArrayFromDatabaseWithQueryString:(NSString *)queryString;
 - (NSArray *)loadTracksArrayFromDatabaseWithQueryString:(NSString *)queryString;
 - (NSArray *)loadSessionsArrayFromDatabaseWithQueryString:(NSString *)queryString;

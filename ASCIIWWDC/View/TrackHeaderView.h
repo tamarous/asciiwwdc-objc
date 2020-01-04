@@ -11,7 +11,7 @@
 @class TrackHeaderView;
 
 @protocol TrackHeaderViewDelegate <NSObject>
-- (void) trackDidClicked:(TrackHeaderView *) trackHeaderView;
+- (void)trackDidClicked:(TrackHeaderView *)trackHeaderView;
 @end
 
 @interface TrackHeaderView : UIButton

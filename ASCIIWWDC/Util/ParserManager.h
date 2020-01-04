@@ -13,5 +13,5 @@
 
 @interface ParserManager : NSObject
 + (instancetype) sharedManager;
-- (NSArray *) createConferencesArrayFromResponseObject:(id) responseObject;
+- (NSArray *)createConferencesArrayFromResponseObject:(id) responseObject;
 @end

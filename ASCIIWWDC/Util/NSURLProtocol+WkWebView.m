@@ -27,7 +27,7 @@ FOUNDATION_STATIC_INLINE SEL UnregisterSchemeSelector() {
 
 @implementation NSURLProtocol (WkWebView)
 
-+ (void) wk_registerScheme:(NSString *)scheme {
++ (void)wk_registerScheme:(NSString *)scheme {
     Class cls = ContextControllerClass();
     SEL sel = RegisterSchemeSelector();
     if ([(id)cls respondsToSelector:sel]) {

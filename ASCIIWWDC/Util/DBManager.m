@@ -7,11 +7,17 @@
 //
 
 #import "DBManager.h"
-
-
+#import <FMDB.h>
+#import "Conference.h"
+#import "Session.h"
+#import "Track.h"
 @interface DBManager()
 @property (nonatomic, strong) FMDatabase *dataBase;
 @property (nonatomic, copy) NSString *dataBasePath;
+- (BOOL)tableExists:(NSString *)tableName;
+- (BOOL)createTable:(NSString *)tableName statementString:(NSString *)statementString;
+- (BOOL)executeInsertString:(NSString *)insertString inTable:(NSString *)tableName;
+- (BOOL)executeUpdateString:(NSString *)updateString inTable:(NSString *)tableName;
 @end
 
 @implementation DBManager
@@ -20,8 +26,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        if ([self databaseExists]) {
-        } else {
+        if (![self databaseExists]) {
             [self createDatabase];
             NSLog(@"database created");
         }
@@ -30,7 +35,7 @@
 }
 
 - (BOOL)databaseExists {
-    return self.dataBasePath != nil && self.dataBase != nil;
+    return self.dataBasePath && self.dataBase;
 }
 
 - (BOOL)tableExists:(NSString *) tableName {

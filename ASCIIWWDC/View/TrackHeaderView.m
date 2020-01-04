@@ -7,13 +7,7 @@
 //
 
 #import "TrackHeaderView.h"
-
-
-@interface TrackHeaderView()
-
-@end
-
-
+#import <ReactiveObjC/ReactiveObjC.h>
 @implementation TrackHeaderView
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -24,24 +18,24 @@
 }
 
 - (void)setupUI {
-    _isOpen = NO;
+    self.isOpen = NO;
     self.backgroundColor = [UIColor whiteColor];
-    
-    
+
     [self setShowsTouchWhenHighlighted:YES];
     [self.titleLabel setTextAlignment:NSTextAlignmentLeft];
     [self setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    
-    
-    UIView *underLine = [[UIView alloc] initWithFrame: CGRectMake(0, self.frame.size.height-0.5, self.frame.size.width, 0.5)];
+
+    UIView *underLine = [[UIView alloc] initWithFrame: CGRectMake(0, CGRectGetHeight(self.bounds) - 0.5, CGRectGetWidth(self.bounds), 0.5)];
     underLine.backgroundColor = [UIColor grayColor];
     
     [self addSubview:underLine];
-    [self addTarget:self action:@selector(clicked:) forControlEvents:UIControlEventTouchUpInside];
-}
-
-- (void)clicked: (TrackHeaderView *) sender {
-    [self.delegate trackDidClicked:sender];
-    _isOpen = ! _isOpen;
+    @weakify(self);
+    [[self rac_signalForControlEvents:UIControlEventTouchUpInside] subscribeNext:^(__kindof UIControl * _Nullable x) {
+        @strongify(self);
+        if ([self.delegate respondsToSelector:@selector(trackDidClicked:)]) {
+            [self.delegate trackDidClicked:self];
+        }
+        self.isOpen = !self.isOpen;
+    }];
 }
 @end

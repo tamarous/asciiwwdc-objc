@@ -45,8 +45,8 @@ static NSString * const kFilteredTableViewCell = @"FilteredTableViewCell";
     self.viewModel.tableView = self.tableView;
     
     self.navigationItem.searchController = self.searchController;
-    self.definesPresentationContext = true;
-    
+    self.navigationItem.hidesSearchBarWhenScrolling = YES;
+
     [self.view addSubview:self.indicatorView];
     [self.indicatorView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.height.mas_equalTo(40);

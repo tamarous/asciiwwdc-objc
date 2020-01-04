@@ -8,6 +8,7 @@
 
 #import "FavoritesViewModel.h"
 #import "DBManager.h"
+#import "Session.h"
 #import <ReactiveObjC/ReactiveObjC.h>
 
 @interface FavoritesViewModel ()

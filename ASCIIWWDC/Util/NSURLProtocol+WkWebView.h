@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @interface NSURLProtocol (WkWebView)
-+ (void) wk_registerScheme:(NSString *)scheme;
++ (void)wk_registerScheme:(NSString *)scheme;
 
-+ (void) wk_unregisterScheme:(NSString *)scheme;
++ (void)wk_unregisterScheme:(NSString *)scheme;
 
 @end
