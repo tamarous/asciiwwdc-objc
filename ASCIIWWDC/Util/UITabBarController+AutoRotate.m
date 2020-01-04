@@ -9,11 +9,11 @@
 #import "UITabBarController+AutoRotate.h"
 
 @implementation UITabBarController (AutoRotate)
-- (BOOL) shouldAutorotate {
+- (BOOL)shouldAutorotate {
     return [self.selectedViewController shouldAutorotate];
 }
 
-- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
     return [self.selectedViewController supportedInterfaceOrientations];
 }
 @end

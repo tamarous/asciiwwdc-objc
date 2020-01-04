@@ -14,13 +14,13 @@
 		BB3A419D2110C3CE0036343C /* UITabBarController+AutoRotate.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3A419C2110C3CE0036343C /* UITabBarController+AutoRotate.m */; };
 		BB3A41A0211217090036343C /* ZWCacheURLProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = BB3A419F211217090036343C /* ZWCacheURLProtocol.m */; };
 		BB42E10420B075ED00625224 /* DBManager.m in Sources */ = {isa = PBXBuildFile; fileRef = BB42E10320B075ED00625224 /* DBManager.m */; };
+		BB6B746323BE3BE400A0998D /* FavoritesViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6B746223BE3BE400A0998D /* FavoritesViewModel.m */; };
 		BB6DA71920AC8CA800747820 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6DA71820AC8CA800747820 /* AppDelegate.m */; };
 		BB6DA72120AC8CA900747820 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB6DA72020AC8CA900747820 /* Assets.xcassets */; };
 		BB6DA72420AC8CA900747820 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB6DA72220AC8CA900747820 /* LaunchScreen.storyboard */; };
 		BB6DA72720AC8CA900747820 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BB6DA72620AC8CA900747820 /* main.m */; };
 		BBAAD10E20B6FE7000C82264 /* FavoritesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAAD10D20B6FE7000C82264 /* FavoritesTableViewController.m */; };
 		BBAC693920ADA877001F5D59 /* Conference.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC693820ADA877001F5D59 /* Conference.m */; };
-		BBAC693C20ADA97E001F5D59 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC693B20ADA97E001F5D59 /* Location.m */; };
 		BBAC693F20ADACA7001F5D59 /* Track.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC693E20ADACA7001F5D59 /* Track.m */; };
 		BBAC694220ADACEC001F5D59 /* Session.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC694120ADACEC001F5D59 /* Session.m */; };
 		BBAC694520ADB014001F5D59 /* ConferencesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = BBAC694420ADB014001F5D59 /* ConferencesTableViewController.m */; };
@@ -48,6 +48,9 @@
 		BB3A419F211217090036343C /* ZWCacheURLProtocol.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZWCacheURLProtocol.m; sourceTree = "<group>"; };
 		BB42E10220B075ED00625224 /* DBManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DBManager.h; sourceTree = "<group>"; };
 		BB42E10320B075ED00625224 /* DBManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DBManager.m; sourceTree = "<group>"; };
+		BB6B746123BE3BE400A0998D /* FavoritesViewModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FavoritesViewModel.h; sourceTree = "<group>"; };
+		BB6B746223BE3BE400A0998D /* FavoritesViewModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FavoritesViewModel.m; sourceTree = "<group>"; };
+		BB6B746423BE422C00A0998D /* BaseModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseModel.h; sourceTree = "<group>"; };
 		BB6DA71420AC8CA800747820 /* ASCIIWWDC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASCIIWWDC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB6DA71720AC8CA800747820 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		BB6DA71820AC8CA800747820 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -59,8 +62,6 @@
 		BBAAD10D20B6FE7000C82264 /* FavoritesTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FavoritesTableViewController.m; sourceTree = "<group>"; };
 		BBAC693720ADA877001F5D59 /* Conference.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Conference.h; sourceTree = "<group>"; };
 		BBAC693820ADA877001F5D59 /* Conference.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Conference.m; sourceTree = "<group>"; };
-		BBAC693A20ADA97E001F5D59 /* Location.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Location.h; sourceTree = "<group>"; };
-		BBAC693B20ADA97E001F5D59 /* Location.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Location.m; sourceTree = "<group>"; };
 		BBAC693D20ADACA7001F5D59 /* Track.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Track.h; sourceTree = "<group>"; };
 		BBAC693E20ADACA7001F5D59 /* Track.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Track.m; sourceTree = "<group>"; };
 		BBAC694020ADACEC001F5D59 /* Session.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Session.h; sourceTree = "<group>"; };
@@ -115,6 +116,8 @@
 			isa = PBXGroup;
 			children = (
 				BB097CA423BCF5E9007F9748 /* ConferencesViewModel.h */,
+				BB6B746123BE3BE400A0998D /* FavoritesViewModel.h */,
+				BB6B746223BE3BE400A0998D /* FavoritesViewModel.m */,
 				BB097CA523BCF5E9007F9748 /* ConferencesViewModel.m */,
 			);
 			path = ViewModel;
@@ -161,12 +164,11 @@
 			children = (
 				BBAC693720ADA877001F5D59 /* Conference.h */,
 				BBAC693820ADA877001F5D59 /* Conference.m */,
-				BBAC693A20ADA97E001F5D59 /* Location.h */,
-				BBAC693B20ADA97E001F5D59 /* Location.m */,
 				BBAC693D20ADACA7001F5D59 /* Track.h */,
 				BBAC693E20ADACA7001F5D59 /* Track.m */,
 				BBAC694020ADACEC001F5D59 /* Session.h */,
 				BBAC694120ADACEC001F5D59 /* Session.m */,
+				BB6B746423BE422C00A0998D /* BaseModel.h */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -333,7 +335,6 @@
 				BB3A419D2110C3CE0036343C /* UITabBarController+AutoRotate.m in Sources */,
 				BBF85D9120AFD79C00DAFE1E /* TrackHeaderView.m in Sources */,
 				BB3A41972110AB060036343C /* NSURLProtocol+WkWebView.m in Sources */,
-				BBAC693C20ADA97E001F5D59 /* Location.m in Sources */,
 				BBAC693920ADA877001F5D59 /* Conference.m in Sources */,
 				BBAC694520ADB014001F5D59 /* ConferencesTableViewController.m in Sources */,
 				BBF85D8E20AFD4F300DAFE1E /* TracksTableViewController.m in Sources */,
@@ -344,6 +345,7 @@
 				BB3A419A2110AE500036343C /* UINavigationController+AutoRotate.m in Sources */,
 				BBAC693F20ADACA7001F5D59 /* Track.m in Sources */,
 				BBAAD10E20B6FE7000C82264 /* FavoritesTableViewController.m in Sources */,
+				BB6B746323BE3BE400A0998D /* FavoritesViewModel.m in Sources */,
 				BB097CA623BCF5E9007F9748 /* ConferencesViewModel.m in Sources */,
 				BBF85D8B20AFB31F00DAFE1E /* ConferenceTableViewCell.m in Sources */,
 				BBAC694220ADACEC001F5D59 /* Session.m in Sources */,

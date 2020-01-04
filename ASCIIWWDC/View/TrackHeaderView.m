@@ -15,7 +15,7 @@
 
 
 @implementation TrackHeaderView
-- (instancetype) initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
         [self setupUI];
@@ -23,7 +23,7 @@
     return self;
 }
 
-- (void) setupUI {
+- (void)setupUI {
     _isOpen = NO;
     self.backgroundColor = [UIColor whiteColor];
     
@@ -40,7 +40,7 @@
     [self addTarget:self action:@selector(clicked:) forControlEvents:UIControlEventTouchUpInside];
 }
 
-- (void) clicked: (TrackHeaderView *) sender {
+- (void)clicked: (TrackHeaderView *) sender {
     [self.delegate trackDidClicked:sender];
     _isOpen = ! _isOpen;
 }

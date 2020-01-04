@@ -127,7 +127,7 @@
     if (!_loadContentFromNetworkCommand) {
         _loadContentFromNetworkCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
             return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
-                [NetworkManager loadConferencesFromURL:kASCIIWWDCHomepageURLString completion:^(NSArray *conferences, NSError *error) {
+                [NetworkManager loadConferencesWithCompletion:^(NSArray *conferences, NSError *error) {
                     if (!error) {
                         [subscriber sendNext:RACTuplePack(conferences)];
                         [subscriber sendCompleted];
@@ -146,7 +146,7 @@
     if (!_saveContentCommand) {
         _saveContentCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
             return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
-                [[DBManager sharedManager] saveConferencesArray:self.conferences];
+                [[DBManager sharedManager] saveModels:self.conferences];
                 [subscriber sendCompleted];
                 return nil;
             }];

@@ -11,9 +11,9 @@
 @interface ZWCacheURLProtocol : NSURLProtocol<NSURLSessionDataDelegate>
 @property (nonatomic, strong) NSURLSessionConfiguration *config;
 @property (nonatomic, assign) NSInteger requestInterval;
-+ (void) startHookNetwork;
-+ (void) stopHookNetwork;
-+ (void) setConfig:(NSURLSessionConfiguration *) config;
-+ (void) setRequestInterval:(NSInteger) requestInterval;
-+ (void) clearUrlDicts;
++ (void)startHookNetwork;
++ (void)stopHookNetwork;
++ (void)setConfig:(NSURLSessionConfiguration *) config;
++ (void)setRequestInterval:(NSInteger) requestInterval;
++ (void)clearUrlDicts;
 @end

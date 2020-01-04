@@ -7,20 +7,24 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Location.h"
 #import "Track.h"
+#import "BaseModel.h"
 
-@interface Conference : NSObject
+@interface Location : NSObject
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) NSString *streetAddress;
+@property (nonatomic, copy) NSString *addressLocality;
+@property (nonatomic, copy) NSString *addressRegion;
+@property (nonatomic, copy) NSString *postalCode;
+@property (nonatomic, copy) NSString *addressCountry;
++ (instancetype) locationFromDescriptionString:(NSString *) description;
+@end
+
+@interface Conference : NSObject <BaseModelProtocol>
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *logoUrlString;
 @property (nonatomic, copy) NSString *shortDescription;
 @property (nonatomic, copy) NSString *time;
 @property (nonatomic, strong) Location *location;
 @property (nonatomic, strong) NSArray<Track *> *tracks;
-//- (BOOL) save;
-//- (BOOL) update;
-+ (NSString *) tableName;
-+ (NSString *) stringForCreateTable;
-+ (NSString *) stringForInsertConference:(Conference *) conference;
-+ (NSString *) stringForUpdateConference:(Conference *) conference;
 @end

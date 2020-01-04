@@ -8,6 +8,7 @@
 
 #import "NSURLProtocol+WkWebView.h"
 #import <WebKit/WebKit.h>
+
 FOUNDATION_STATIC_INLINE Class ContextControllerClass() {
     static Class cls;
     if (!cls) {

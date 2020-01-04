@@ -8,6 +8,6 @@
 
 @interface NetworkManager : NSObject
 
-+ (void)loadConferencesFromURL:(NSString *)urlString completion:(void (^)(NSArray *conferences, NSError *error))completion;
++ (void)loadConferencesWithCompletion:(void (^)(NSArray *conferences, NSError *error))completion;
 
 @end

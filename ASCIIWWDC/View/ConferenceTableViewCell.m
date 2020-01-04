@@ -20,7 +20,7 @@
 
 @implementation ConferenceTableViewCell
 
-- (instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -31,7 +31,7 @@
     return self;
 }
 
-- (void) configureViews {
+- (void)configureViews {
     self.containerView = [[UIView alloc] init];
     [self.contentView addSubview:self.containerView];
     

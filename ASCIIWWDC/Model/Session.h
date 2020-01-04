@@ -7,17 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-
-@interface Session : NSObject
+#import "BaseModel.h"
+@interface Session : NSObject <BaseModelProtocol>
 @property (nonatomic, copy) NSString *sessionID;
 @property (nonatomic, copy) NSString *title;
 @property (nonatomic, copy) NSString *urlString;
 @property (nonatomic, copy) NSString *trackName;
 @property (nonatomic, assign) BOOL isFavored;
-
-+ (NSString *) tableName;
-+ (NSString *) stringForCreateTable;
-+ (NSString *) stringForInsertSession:(Session *) session;
-+ (NSString *) stringForUpdateSession:(Session *) session;
-+ (NSString *) stringForInsertOrReplaceSession:(Session *) session;
 @end

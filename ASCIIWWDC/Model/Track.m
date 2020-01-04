@@ -7,33 +7,34 @@
 //
 
 #import "Track.h"
-static NSString * TRACK_TABLE_NAME = @"TRACKS";
-
-
 @implementation Track
 
-+ (NSString *) tableName {
-    return TRACK_TABLE_NAME;
+#pragma mark - BaseModelProtocol
++ (NSString *)tableName {
+    return NSStringFromClass([self class]);
 }
 
-+ (NSString *) stringForCreateTable {
-    NSString *str = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ (TRACK_ID INTEGER PRIMARY KEY,TRACK_NAME TEXT, CONFERENCE_NAME TEXT NOT NULL);",TRACK_TABLE_NAME];
++ (NSString *)statementForCreateTable {
+    NSString *str = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@ (TRACK_ID INTEGER PRIMARY KEY,TRACK_NAME TEXT, CONFERENCE_NAME TEXT NOT NULL);",[self tableName]];
     return str;
 }
 
-+ (NSString *) stringForInsertTrack:(Track *)track {
-    NSString *str = [NSString stringWithFormat:@"INSERT OR IGNORE INTO %@ VALUES(NULL,\"%@\",\"%@\");",TRACK_TABLE_NAME,track.trackName,track.conferenceName];
+- (NSString *)statementForUpdate {
+    NSString *str = [NSString stringWithFormat:@"UPDATE OR IGNORE %@ SET TRACK_NAME = \"%@\", CONFERENCE_NAME = \"%@\";",[[self class] tableName], self.trackName, self.conferenceName];
     return str;
 }
 
-+ (NSString *) stringForUpdateTrack:(Track *)track {
-    NSString *str = [NSString stringWithFormat:@"UPDATE OR IGNORE %@ SET TRACK_NAME = \"%@\", CONFERENCE_NAME = \"%@\";",TRACK_TABLE_NAME,track.trackName,track.conferenceName];
+- (NSString *)statementForInsert {
+    NSString *str = [NSString stringWithFormat:@"INSERT OR IGNORE INTO %@ VALUES(NULL,\"%@\",\"%@\");",[[self class] tableName], self.trackName, self.conferenceName];
     return str;
 }
 
-+ (NSString *) stringForInsertOrReplaceTrack:(Track *)track {
-    NSString *str = [NSString stringWithFormat:@"INSERT OR REPLACE INTO %@ (TRACK_NAME, CONFERENCE_NAME) VALUES(\"%@\",\"%@\");",TRACK_TABLE_NAME,track.trackName,track.conferenceName];
+- (NSString *)statementForInsertOrReplace {
+    NSString *str = [NSString stringWithFormat:@"INSERT OR REPLACE INTO %@ (TRACK_NAME, CONFERENCE_NAME) VALUES(\"%@\",\"%@\");", [[self class] tableName], self.trackName, self.conferenceName];
     return str;
 }
 
+- (NSArray<id<BaseModelProtocol>> *)subModels {
+    return self.sessions;
+}
 @end

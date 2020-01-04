@@ -9,12 +9,12 @@
 #import "UINavigationController+AutoRotate.h"
 
 @implementation UINavigationController(AutoRotate)
-- (BOOL) shouldAutorotate {
+- (BOOL)shouldAutorotate {
     return [self.topViewController shouldAutorotate];
 }
 
-- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
-    return  [self.topViewController supportedInterfaceOrientations];
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return [self.topViewController supportedInterfaceOrientations];
 }
 
 @end

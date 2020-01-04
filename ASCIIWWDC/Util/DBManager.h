@@ -11,6 +11,7 @@
 #import "Conference.h"
 #import "Session.h"
 #import "Track.h"
+#import "BaseModel.h"
 @interface DBManager : NSObject
 
 + (instancetype)sharedManager;
@@ -19,17 +20,12 @@
 - (BOOL)createTable:(NSString *)tableName statementString:(NSString *)statementString;
 - (BOOL)executeInsertString:(NSString *)insertString inTable:(NSString *)tableName;
 - (BOOL)executeUpdateString:(NSString *)updateString inTable:(NSString *)tableName;
-- (BOOL)saveConference:(Conference *)conference;
-- (BOOL)updateConference:(Conference *)conference;
-- (BOOL)saveConferencesArray:(NSArray *)conferences;
+
 - (NSArray *)loadConferencesArrayFromDatabaseWithQueryString:(NSString *)queryString;
-- (BOOL)saveTrack:(Track *)track;
-- (BOOL)updateTrack:(Track *)track;
-- (BOOL)saveTracksArray:(NSArray *)tracks;
 - (NSArray *)loadTracksArrayFromDatabaseWithQueryString:(NSString *)queryString;
-- (BOOL)saveSession:(Session *)session;
-- (BOOL)updateSession:(Session *)session;
-- (BOOL)saveSessionsArray:(NSArray *)sessions;
 - (NSArray *)loadSessionsArrayFromDatabaseWithQueryString:(NSString *)queryString;
-- (BOOL)isFavoredForSession:(Session *)session;
+
+- (BOOL)saveModel:(id<BaseModelProtocol>)model;
+- (BOOL)updateModel:(id<BaseModelProtocol>)model;
+- (BOOL)saveModels:(NSArray<id<BaseModelProtocol> > *)models;
 @end

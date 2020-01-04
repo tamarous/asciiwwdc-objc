@@ -19,14 +19,14 @@
 
 @implementation ZWURLCacheConfig
 
-- (NSInteger) requestInterval {
+- (NSInteger)requestInterval {
     if (_requestInterval == 0) {
         _requestInterval = 7 * 24 * 60 * 60;
     }
     return _requestInterval;
 }
 
-- (NSURLSessionConfiguration *) config {
+- (NSURLSessionConfiguration *)config {
     if (!_config) {
         _config = [NSURLSessionConfiguration defaultSessionConfiguration];
     }
@@ -40,7 +40,7 @@
     return _urlDict;
 }
 
-- (NSOperationQueue *) foregroundQueue {
+- (NSOperationQueue *)foregroundQueue {
     if (!_foregroundQueue) {
         _foregroundQueue = [[NSOperationQueue alloc] init];
         [_foregroundQueue setMaxConcurrentOperationCount:6];
@@ -48,7 +48,7 @@
     return _foregroundQueue;
 }
 
-- (NSOperationQueue *) backgroundQueue {
+- (NSOperationQueue *)backgroundQueue {
     if (! _backgroundQueue) {
         _backgroundQueue = [[NSOperationQueue alloc] init];
         [_backgroundQueue setMaxConcurrentOperationCount:6];
@@ -56,7 +56,7 @@
     return _backgroundQueue;
 }
 
-+ (instancetype) sharedInstance {
++ (instancetype)sharedInstance {
     static ZWURLCacheConfig *shared = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -65,7 +65,7 @@
     return shared;
 }
 
-- (void) clearUrlDict {
+- (void)clearUrlDict {
     [[ZWURLCacheConfig sharedInstance].urlDict removeAllObjects];
     [ZWURLCacheConfig sharedInstance].urlDict = nil;
 }
@@ -83,7 +83,7 @@ static NSString *const checkUpdateInBackgroundKey = @"checkUpdateInBackgroundKey
 
 
 @implementation ZWCacheURLProtocol
-+ (void) startHookNetwork {
++ (void)startHookNetwork {
     
     [NSURLProtocol wk_registerScheme:@"http"];
     [NSURLProtocol wk_registerScheme:@"https"];
@@ -98,19 +98,19 @@ static NSString *const checkUpdateInBackgroundKey = @"checkUpdateInBackgroundKey
 }
 
 
-+ (void) setConfig:(NSURLSessionConfiguration *)config {
++ (void)setConfig:(NSURLSessionConfiguration *)config {
     [[ZWURLCacheConfig sharedInstance] setConfig:config];
 }
 
-+ (void) setRequestInterval:(NSInteger)requestInterval {
++ (void)setRequestInterval:(NSInteger)requestInterval {
     [[ZWURLCacheConfig sharedInstance] setRequestInterval:requestInterval];
 }
 
-+ (void) clearUrlDicts {
++ (void)clearUrlDicts {
     [[ZWURLCacheConfig sharedInstance] clearUrlDict];
 }
 
-+ (BOOL) canInitWithRequest:(NSURLRequest *)request {
++ (BOOL)canInitWithRequest:(NSURLRequest *)request {
     NSString *urlScheme = [[request URL] scheme];
     if ([urlScheme caseInsensitiveCompare:@"http"] == NSOrderedSame || [urlScheme caseInsensitiveCompare:@"https"]) {
         if ([NSURLProtocol propertyForKey:AlreadyHandledKey inRequest:request]) {
@@ -120,11 +120,11 @@ static NSString *const checkUpdateInBackgroundKey = @"checkUpdateInBackgroundKey
     return YES;
 }
 
-+ (NSURLRequest *) canonicalRequestForRequest:(NSURLRequest *)request {
++ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
     return request;
 }
 
-- (void) backgroundCheckUpdate {
+- (void)backgroundCheckUpdate {
     __weak typeof(self) weakSelf = self;
     [[[ZWURLCacheConfig sharedInstance] backgroundQueue] addOperationWithBlock:^{
         NSDate *updateDate = [[ZWURLCacheConfig sharedInstance].urlDict objectForKey:weakSelf.request.URL.absoluteString];
@@ -142,7 +142,7 @@ static NSString *const checkUpdateInBackgroundKey = @"checkUpdateInBackgroundKey
     }];
 }
 
-- (void) startRequestWithRequest:(NSURLRequest *)request {
+- (void)startRequestWithRequest:(NSURLRequest *)request {
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     self.session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[ZWURLCacheConfig sharedInstance].foregroundQueue];
     NSURLSessionDataTask *task = [self.session dataTaskWithRequest:request];
@@ -151,7 +151,7 @@ static NSString *const checkUpdateInBackgroundKey = @"checkUpdateInBackgroundKey
 }
 
 
-- (void) startLoading {
+- (void)startLoading {
     NSCachedURLResponse *urlResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:[self request]];
     if (urlResponse) {
         [self.client URLProtocol:self didReceiveResponse:urlResponse.response cacheStoragePolicy:NSURLCacheStorageAllowed];
@@ -166,12 +166,12 @@ static NSString *const checkUpdateInBackgroundKey = @"checkUpdateInBackgroundKey
     [self startRequestWithRequest:mutableRequest];
 }
 
-- (void) stopLoading {
+- (void)stopLoading {
     [self.session invalidateAndCancel];
     self.session = nil;
 }
 
-- (BOOL) isUseCache {
+- (BOOL)isUseCache {
     NSCachedURLResponse *urlResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:[self request]];
     if (urlResponse) {
         return YES;
@@ -179,7 +179,7 @@ static NSString *const checkUpdateInBackgroundKey = @"checkUpdateInBackgroundKey
     return NO;
 }
 
-- (void) appendData:(NSData *) newData {
+- (void)appendData:(NSData *) newData {
     if ([self data] == nil) {
         [self setData:[newData mutableCopy]];
     } else {

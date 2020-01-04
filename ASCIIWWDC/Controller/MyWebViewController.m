@@ -65,9 +65,6 @@
             }];
         }
     }];
-    [[self.loadRequestCommand.executionSignals concat] subscribeCompleted:^{
-        NSLog(@"load request completed.");
-    }];
 }
 
 - (UIProgressView *)progressView {
@@ -109,7 +106,7 @@
     self.session.isFavored = !self.session.isFavored;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [[DBManager sharedManager] updateSession:self.session];
+        [[DBManager sharedManager] updateModel:self.session];
         dispatch_async(dispatch_get_main_queue(), ^{
             [SVProgressHUD showSuccessWithStatus:@"Updated"];
             [SVProgressHUD dismissWithDelay:1.5];
@@ -146,7 +143,7 @@
     if (!_saveContentCommand) {
         _saveContentCommand = [[RACCommand alloc] initWithSignalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
             return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
-                [[DBManager sharedManager] saveSession:self.session];
+                [[DBManager sharedManager] saveModel:self.session];
                 [subscriber sendCompleted];
                 return nil;
             }];

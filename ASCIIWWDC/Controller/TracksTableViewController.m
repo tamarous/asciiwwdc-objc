@@ -13,7 +13,7 @@
 #import <ReactiveObjC/ReactiveObjC.h>
 
 static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
-#define TRACK_HEADER_HEIGHT 48
+#define kTrackHeaderHeight 48
 
 @interface TracksTableViewController () <TrackHeaderViewDelegate>
 @property (nonatomic, strong) NSMutableArray *isOpen;
@@ -65,11 +65,11 @@ static NSString * const kSessionTableViewCell = @"SessionTableViewCell";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return TRACK_HEADER_HEIGHT;
+    return kTrackHeaderHeight;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    TrackHeaderView *trackHeaderView = [[TrackHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, TRACK_HEADER_HEIGHT)];
+    TrackHeaderView *trackHeaderView = [[TrackHeaderView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, kTrackHeaderHeight)];
     Track *track = [self.tracks objectAtIndex:section];
     [trackHeaderView setTitle:track.trackName forState:UIControlStateNormal];
     [trackHeaderView setTag:section];

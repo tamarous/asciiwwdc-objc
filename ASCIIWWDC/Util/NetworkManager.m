@@ -7,12 +7,10 @@
 #import "DBManager.h"
 #import "ParserManager.h"
 #import <AFNetworking/AFNetworking.h>
-@interface NetworkManager()
-
-@end
+#import "Constants.h"
 
 @implementation NetworkManager
-+ (void)loadConferencesFromURL:(NSString *)urlString completion:(void (^)(NSArray *conferences, NSError *error))completion {
++ (void)loadConferencesWithCompletion:(void (^)(NSArray *conferences, NSError *error))completion {
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithSessionConfiguration:configuration];
     AFHTTPRequestSerializer *requestSerializer = [AFHTTPRequestSerializer serializer];
@@ -21,7 +19,7 @@
     AFHTTPResponseSerializer *responseSerializer = [AFHTTPResponseSerializer serializer];
     manager.requestSerializer = requestSerializer;
     manager.responseSerializer = responseSerializer;
-    NSURL *URL = [NSURL URLWithString:urlString];
+    NSURL *URL = [NSURL URLWithString:kASCIIWWDCHomepageURLString];
     NSURLRequest *request = [NSURLRequest requestWithURL:URL];
     NSURLSessionDataTask *dataTask = [manager dataTaskWithRequest:request uploadProgress:nil downloadProgress:nil completionHandler:^(NSURLResponse * _Nonnull response, id  _Nullable responseObject, NSError * _Nullable error) {
         if (error) {

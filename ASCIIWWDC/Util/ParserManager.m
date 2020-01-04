@@ -7,18 +7,8 @@
 //
 
 #import "ParserManager.h"
-@interface ParserManager()
 
-@end
 @implementation ParserManager
-
-- (instancetype) init {
-    if (self = [super init]) {
-        
-    }
-    return self;
-}
-
 
 + (instancetype) sharedManager {
     static ParserManager * manager = nil;
@@ -29,7 +19,7 @@
     return manager;
 }
 
-- (NSArray *) createSessionsArrayFromTrackNode:(HTMLElement *) trackNode {
+- (NSArray *)createSessionsArrayFromTrackNode:(HTMLElement *) trackNode {
     NSArray *dtNodes = [trackNode querySelectorAll:@"dt"];
     NSArray *ddNodes = [trackNode querySelectorAll:@"dd"];
     NSAssert(dtNodes.count == ddNodes.count, @"dtNodes.count != ddNodes.count");
@@ -46,7 +36,7 @@
     return [sessions copy];
 }
 
-- (NSArray *) createTracksArrayFromConferenceNode:(HTMLElement *) conferenceNode {
+- (NSArray *)createTracksArrayFromConferenceNode:(HTMLElement *) conferenceNode {
     NSArray * trackNodes = [conferenceNode querySelectorAll:@".track"];
     __block NSMutableArray *tracks = [NSMutableArray array];
     [trackNodes enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -64,7 +54,7 @@
     return [tracks copy];
 }
 
-- (Conference *) createConferenceFromConferenceNode:(HTMLElement *) conferenceNode {
+- (Conference *)createConferenceFromConferenceNode:(HTMLElement *) conferenceNode {
     __block Conference *conference = [[Conference alloc] init];
 
     conference.logoUrlString = [conferenceNode querySelector:@"header img"].attributes[@"src"];
@@ -103,7 +93,7 @@
     return conference;
 }
 
-- (NSArray *) createConferencesArrayFromResponseObject:(id)responseObject {
+- (NSArray *)createConferencesArrayFromResponseObject:(id)responseObject {
     
     NSString *htmlString = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
     HTMLParser *parser = [[HTMLParser alloc] initWithString:htmlString];
